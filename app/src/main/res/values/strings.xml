@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">周转箱</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="error_unkown">未知错误</string>
+    <string name="error_http">网络连接错误</string>
+    <string name="error_system">服务器出错</string>
+    <string name="error_account_freeze">账户被冻结，请联系管理员</string>
+    <string name="error_api_no_perission">调用了无权限的API接口</string>
+    <string name="error_login">用户名或者密码错误</string>
+    <string name="error_http_400">bad request</string>
+    <string name="error_http_404">服务器资源找不到</string>
+    <string name="error_http_500">服务器错误</string>
+    <string name="error_socket_timeout">网络超时</string>
+    <string name="error_socket_unreachable">网络不可用</string>
+    <string name="error_network_unreachable">网络连接不可用，请检查网络设置!</string>
+    <string name="rfid_mgs_error_config">设备配置错误</string>
+    <string name="yid_msg_scan_fail">Scan failure</string>
+
+    <string name="default_loading">loading</string>
+    <string name="login">登录</string>
+
+    <!-- Options available in the Navigation Drawer of the application -->
+    <string-array name="options_array">
+        <item>主页</item>
+        <item>租赁</item>
+        <item>退还</item>
+        <item>报废登记</item>
+        <item>扫码查询</item>
+        <item>设置</item>
+        <item>退出</item>
+    </string-array>
+
+    <string name="drawer_image_desc">Icon for the Navigation drawer item</string>
+    <string name="drawer_item_text">Drawer Item</string>
+    <string name="settting_inform">通讯设置</string>
+    <string name="settting_item">其它设置</string>
+    <string name="settting_user">账号设置</string>
+    <string name="settting_help">使用帮助</string>
+    <string name="settting_inform_ip">IP地址：</string>
+    <string name="settting_inform_port">端口号：</string>
+    <string name="save">保存</string>
+    <string name="setting_user_name">用户名：</string>
+    <string name="setting_user_pass">原密码：</string>
+    <string name="setting_user_pass1">新密码：</string>
+    <string name="setting_user_pass2">密码确认：</string>
+    <string name="lease_num">租赁卡编号：</string>
+    <string name="lease_name">租赁人姓名：</string>
+    <string name="lease_next">扫描货物</string>
+    <string name="lease_scan">扫描租赁卡</string>
+    <string name="lease_back">扫描退换卡</string>
+    <string name="lease_money">合计：</string>
+    <string name="lease_commit">出库提交</string>
+    <string name="lease_print">打印</string>
+    <string name="return_next">下一步</string>
+    <string name="return_num">退还卡编号：</string>
+    <string name="return_name">退还人姓名：</string>
+    <string name="return_money">破损总扣费：</string>
+    <string name="return_commit">入库提交</string>
+    <string name="pick_commit">报废提交</string>
+    <string name="find_scan">扫码查询</string>
+    <string name="pick_scan">扫描货物</string>
+</resources>
