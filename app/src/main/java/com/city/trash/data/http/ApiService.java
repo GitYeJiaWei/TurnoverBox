@@ -22,7 +22,8 @@ import retrofit2.http.QueryMap;
 
 public interface ApiService
 {
-    String BASE_URL = "http://192.168.66.3:8112/";
+    //String BASE_URL = "http://192.168.66.3:8112/";
+    String BASE_URL = "http://mall.ioter-e.com:8112/";
 
     //token为方法名，基类中不能加入方法名
     @FormUrlEncoded

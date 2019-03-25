@@ -23,7 +23,8 @@ public class BaseUrlInterceptor implements Interceptor {
         String host = ACache.get(AppApplication.getApplication()).getAsString("host");
         String token = ACache.get(AppApplication.getApplication()).getAsString("token");
         if (ip == null) {
-            ip = "192.168.66.3";
+            //ip = "192.168.66.3";
+            ip = "mall.ioter-e.com";
         }
         if (host == null){
             host = "8112";

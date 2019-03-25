@@ -87,7 +87,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             finish();
         }
 
-        AppApplication.mReader.setPower(20);
+        AppApplication.mReader.setPower(30);
         setTitle("扫描出库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
@@ -116,6 +116,9 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
              type = baseBean.getData().get(i).getProductTypeId();
              name = baseBean.getData().get(i).getProductTypeName();
              money1 = baseBean.getData().get(i).getDeposit();
+            if (baseEpc._EPC.length()<=type.length()+1){
+                return;
+            }
             if (type.equals(baseEpc._EPC.substring(0,type.length()))){
 
                 EPC epc = new EPC();

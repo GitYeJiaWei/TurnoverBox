@@ -81,6 +81,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
         for (int i = 0; i < baseBean.getData().size(); i++) {
             type = baseBean.getData().get(i).getProductTypeId();
             name = baseBean.getData().get(i).getProductTypeName();
+            if (baseEpc._EPC.length()<=type.length()+1){
+                return;
+            }
             if (type.equals(baseEpc._EPC.substring(0,type.length()))){
                 EPC epc = new EPC();
                 epc.setData1(baseEpc._EPC);
@@ -126,7 +129,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             return;
         }
 
-        AppApplication.mReader.setPower(20);
+        AppApplication.mReader.setPower(30);
         setTitle("扫描入库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
