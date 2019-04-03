@@ -890,4 +890,17 @@ public class DateUtil
         return new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date(value));// 2017-10-23
     }
 
+    private static long lastClickTime;
+
+    //大于1000ms是false
+    public static boolean isFastClick() {
+        boolean flag = true;
+        long currentClickTime = System.currentTimeMillis();
+        if ((currentClickTime - lastClickTime) >= 2000) {
+            flag = false;
+        }
+        lastClickTime = currentClickTime;
+        return flag;
+    }
+
 }

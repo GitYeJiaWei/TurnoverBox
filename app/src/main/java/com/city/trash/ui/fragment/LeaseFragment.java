@@ -14,6 +14,7 @@ import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.EPC;
 import com.city.trash.bean.LeaseBean;
 import com.city.trash.common.util.ACache;
+import com.city.trash.common.util.DateUtil;
 import com.city.trash.common.util.SoundManage;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -44,6 +45,7 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
     @BindView(R.id.list_lease)
     ListView listLease;
     private InitListAdapter initListAdapter;
+
 
     public static LeaseFragment newInstance() {
         return new LeaseFragment();
@@ -83,6 +85,9 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
 
 
     private void readTag() {
+        if (DateUtil.isFastClick()){
+            return;
+        }
         AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = AppApplication.mReader.readData("00000000",

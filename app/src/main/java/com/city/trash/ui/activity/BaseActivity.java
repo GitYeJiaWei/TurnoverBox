@@ -94,6 +94,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         {
             waitDialog = null;
         }
+
         EventBus.getDefault().unregister(this);
         ActivityCollecter.removeActivity(this);
     }

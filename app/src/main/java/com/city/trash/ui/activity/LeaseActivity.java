@@ -1,8 +1,6 @@
 package com.city.trash.ui.activity;
 
-import android.app.Application;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements CreateRentContract.CreateRentView {
@@ -87,7 +84,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             finish();
         }
 
-        AppApplication.mReader.setPower(30);
+        AppApplication.mReader.setPower(10);
         setTitle("扫描出库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
@@ -205,6 +202,10 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 readTag(a);
                 break;
             case R.id.btn_commit:
+                if (a==2){
+                    readTag(a);
+                }
+
                 ArrayList<String> arrayList = new ArrayList<>();
                 Iterator it = hashMap.keySet().iterator();
                 while (it.hasNext()) {
@@ -257,5 +258,13 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     @Override
     public void showError(String msg) {
         ToastUtil.toast("出库提交失败");
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (a==2){
+            readTag(a);
+        }
+        super.onDestroy();
     }
 }

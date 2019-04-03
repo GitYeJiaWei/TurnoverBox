@@ -73,7 +73,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     public void init() {
         setTitle("报废登记");
         linLease.setVisibility(View.GONE);
-        AppApplication.mReader.setPower(30);
+        AppApplication.mReader.setPower(10);
         hashMap.clear();
         map.clear();
         leaseScanadapter = new LeaseScanadapter(this, "pick");
@@ -229,6 +229,9 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
                 readTag(a);
                 break;
             case R.id.btn_lease:
+                if (a==2){
+                    readTag(a);
+                }
                 ArrayList<String> arrayList = new ArrayList<>();
                 Iterator it = hashMap.keySet().iterator();
                 while (it.hasNext()) {
@@ -242,4 +245,11 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if (a==2){
+            readTag(a);
+        }
+        super.onDestroy();
+    }
 }

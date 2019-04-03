@@ -129,7 +129,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             return;
         }
 
-        AppApplication.mReader.setPower(30);
+        AppApplication.mReader.setPower(10);
         setTitle("扫描入库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
@@ -216,7 +216,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                 readTag(a);
                 break;
             case R.id.btn_commit:
-
+                if (a==2){
+                    readTag(a);
+                }
                 Iterator it = hashMap.keySet().iterator();
                 while (it.hasNext()) {
                     String key = (String) it.next();
@@ -227,5 +229,13 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                 mPresenter.Return(AppApplication.getGson().toJson(arrayList)); //获取超时数量
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (a==2){
+            readTag(a);
+        }
+        super.onDestroy();
     }
 }
