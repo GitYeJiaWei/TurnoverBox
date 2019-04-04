@@ -205,7 +205,6 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 if (a==2){
                     readTag(a);
                 }
-
                 ArrayList<String> arrayList = new ArrayList<>();
                 Iterator it = hashMap.keySet().iterator();
                 while (it.hasNext()) {
@@ -262,9 +261,10 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     protected void onDestroy() {
-        if (a==2){
-            readTag(a);
-        }
+        a=2;
+        readTag(a);
         super.onDestroy();
     }
+
+
 }

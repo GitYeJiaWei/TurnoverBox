@@ -233,9 +233,8 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     protected void onDestroy() {
-        if (a==2){
-            readTag(a);
-        }
+        a=2;
+        readTag(a);
         super.onDestroy();
     }
 }

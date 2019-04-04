@@ -25,6 +25,7 @@ import com.city.trash.presenter.CreateReturnPresenter;
 import com.city.trash.presenter.contract.CreateReturnContract;
 import com.city.trash.ui.adapter.ReturnCommitAdapter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +117,10 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                 if (TextUtils.isEmpty(s.toString())){
                     s1 = sum;
                 }else {
-                    s1=sum -Double.valueOf(s.toString());
+                    //new BigDecimal("string")转完一定是string，不会有精度问题
+                    BigDecimal st = new BigDecimal(s.toString());
+                    BigDecimal su = new BigDecimal(Double.toString(sum));
+                    s1=su.subtract(st).doubleValue();
                 }
                 tvBack.setText("累计退还："+num+"个  应退金额："+s1+"元");
             }
@@ -174,7 +178,11 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                     ToastUtil.toast("应退金额不能小于0元");
                     return;
                 }
-                mPresenter.CreateReturn(id,s1+"",listEpcJson);
+                double damageFee = 0;
+                if (!TextUtils.isEmpty(tvMoney.getText().toString())){
+                   damageFee = Double.valueOf(tvMoney.getText().toString());
+                }
+                mPresenter.CreateReturn(id,damageFee+"",listEpcJson);
                 break;
             case R.id.btn_print:
                 break;
