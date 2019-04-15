@@ -23,8 +23,13 @@ import com.city.trash.di.module.CreatRentModule;
 import com.city.trash.presenter.CreatRentPresenter;
 import com.city.trash.presenter.contract.CreateRentContract;
 import com.city.trash.ui.adapter.LeaseScanadapter;
+import com.qs.helper.printer.PrintService;
+import com.qs.helper.printer.PrinterClass;
 
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +62,8 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     LeaseBean leaseBean;
     private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
     private HashMap<String, String> map = new HashMap<>();
-    private BaseBean<List<FeeRule>> baseBean = null;
+    private BaseBean<FeeRule> baseBean = null;
+    private double sum = 0;
 
     @Override
     public int setLayout() {
@@ -76,7 +82,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
         if (intent != null) {
             leaseBean = (LeaseBean) intent.getSerializableExtra("cardCode");
             String Tid = intent.getStringExtra("TID");
-            tvName.setText(leaseBean.getName());
+            tvName.setText(leaseBean.getContactName());
             tvTid.setText(Tid);
         }
         if (leaseBean == null) {
@@ -92,9 +98,9 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
         leaseScanadapter = new LeaseScanadapter(this, "lease");
         listLease.setAdapter(leaseScanadapter);
 
-        baseBean = (BaseBean<List<FeeRule>>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
+        baseBean = (BaseBean<FeeRule>) ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
         if (baseBean==null){
-            return;
+            finish();
         }
     }
 
@@ -109,10 +115,10 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
         String type = null;
         String name = null;
         double money1 = 0;
-        for (int i = 0; i < baseBean.getData().size(); i++) {
-             type = baseBean.getData().get(i).getProductTypeId();
-             name = baseBean.getData().get(i).getProductTypeName();
-             money1 = baseBean.getData().get(i).getDeposit();
+        for (int i = 0; i < baseBean.getData().getFeeRules().size(); i++) {
+             type = baseBean.getData().getFeeRules().get(i).getProductTypeId();
+             name = baseBean.getData().getFeeRules().get(i).getProductTypeName();
+             money1 = baseBean.getData().getFeeRules().get(i).getDeposit();
             if (baseEpc._EPC.length()<=type.length()+1){
                 return;
             }
@@ -131,7 +137,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
                 epclist.clear();
                 Iterator iterator = hashMap.keySet().iterator();
-                double sum = 0;
+                sum = 0;
                 while (iterator.hasNext()) {
                     String key = (String) iterator.next();
                     double money = hashMap.get(key).get(0).getMoney();
@@ -216,6 +222,41 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), leaseBean.getId());
                 break;
             case R.id.btn_print:
+                if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
+                    ToastUtil.toast("请先到设置中连接打印机");
+                    return;
+                }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date(System.currentTimeMillis());
+                String str_time = simpleDateFormat.format(date);
+
+                String mess="";
+                for (int i = 0; i < epclist.size(); i++) {
+                    String epc = epclist.get(i).getEpc();
+                    String data = epclist.get(i).getData2();
+                    String money = epclist.get(i).getMoney()+"";
+                    mess += epc+"    |    "+data+"     |   "+money+"\n";
+                }
+                String message =
+                "*********租赁信息*********\n" +
+                "租赁人："+leaseBean.getContactName()+"\n" +
+                "租赁卡："+tvTid.getText().toString()+"\n" +
+                "--------------------------\n" +
+                "规格   |   数量   |   押金\n" +
+                 mess+
+                "--------------------------\n" +
+                "累计租赁（个）："+map.size()+"\n"+
+                "应付金额（元）："+sum+"\n"+
+                "操作员："+ACache.get(AppApplication.getApplication()).getAsString("username")+"\n" +
+                "打印时间："+str_time+"\n\n\n";
+                try {
+                    byte[] send=message.getBytes("GBK");
+                    PrintService.pl.write(send);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                PrintService.pl.printText("\n");
+                PrintService.pl.write(new byte[] { 0x1d, 0x0c });
                 break;
         }
     }

@@ -56,7 +56,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     @BindView(R.id.list_lease)
     ListView listLease;
     private InitListAdapter initListAdapter;
-    private BaseBean<List<FeeRule>> baseBean = null;
+    private BaseBean<FeeRule> baseBean = null;
 
     @Override
     public int setLayout() {
@@ -88,7 +88,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
             initListAdapter.updateDatas(leaseResultlist);
         }
 
-        baseBean = (BaseBean<List<FeeRule>>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
+        baseBean = (BaseBean<FeeRule>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
         if (baseBean==null){
             return;
         }
@@ -103,9 +103,9 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
         }
         String type = null;
         String name = null;
-        for (int i = 0; i < baseBean.getData().size(); i++) {
-            type = baseBean.getData().get(i).getProductTypeId();
-            name = baseBean.getData().get(i).getProductTypeName();
+        for (int i = 0; i < baseBean.getData().getFeeRules().size(); i++) {
+            type = baseBean.getData().getFeeRules().get(i).getProductTypeId();
+            name = baseBean.getData().getFeeRules().get(i).getProductTypeName();
             if (baseEpc._EPC.length()<=type.length()+1){
                 return;
             }

@@ -24,9 +24,15 @@ import com.city.trash.di.module.CreateReturnModule;
 import com.city.trash.presenter.CreateReturnPresenter;
 import com.city.trash.presenter.contract.CreateReturnContract;
 import com.city.trash.ui.adapter.ReturnCommitAdapter;
+import com.qs.helper.printer.PrintService;
+import com.qs.helper.printer.PrinterClass;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -92,13 +98,15 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             for (int i = 0; i < returnBean.getData().size(); i++) {
                 ReturnBean rb = returnBean.getData().get(i);
                 EPC epc = new EPC();
-                epc.setEpc(rb.getProductTypeId());
+                epc.setEpc(rb.getProductTypeName());
                 epc.setNum(rb.getQty());
                 epc.setOverNum(rb.getOvertimeQty());
                 epc.setOverTime(rb.getOvertimeDays());
                 epc.setMoney(rb.getReturnAmount());
                 epclist.add(epc);
-                sum +=rb.getReturnAmount();
+                BigDecimal bd1 = new BigDecimal(Double.toString(rb.getReturnAmount()));
+                BigDecimal bd2 = new BigDecimal(Double.toString(sum));
+                sum =bd1.add(bd2).doubleValue();
                 num +=rb.getQty();
             }
             s1 = sum;
@@ -175,7 +183,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         switch (view.getId()) {
             case R.id.btn_commit:
                 if (s1<0){
-                    ToastUtil.toast("应退金额不能小于0元");
+                    ToastUtil.toast("应退金额不能小于0元，请先充值再退还");
                     return;
                 }
                 double damageFee = 0;
@@ -185,6 +193,43 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                 mPresenter.CreateReturn(id,damageFee+"",listEpcJson);
                 break;
             case R.id.btn_print:
+                if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
+                    ToastUtil.toast("请先到设置中连接打印机");
+                    return;
+                }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date(System.currentTimeMillis());
+                String str_time = simpleDateFormat.format(date);
+
+                String mess="";
+                for (int i = 0; i < epclist.size(); i++) {
+                    String epc = epclist.get(i).getEpc();
+                    String num1 = epclist.get(i).getNum()+"";
+                    String overNum = epclist.get(i).getOverNum()+"";
+                    String overTime = epclist.get(i).getOverTime()+"";
+                    mess += epc+" |  "+num1+" |    "+overNum+"   |    "+overTime+"\n";
+                }
+                String message =
+                                "*********退还信息*********\n" +
+                                "退还人："+tvName.getText().toString()+"\n" +
+                                "退还卡："+tvTid.getText().toString()+"\n" +
+                                "--------------------------\n" +
+                                "规格|数量|超时数量|超时天数\n" +
+                                mess+
+                                "--------------------------\n" +
+                                "累计退还（个）："+num+"\n"+
+                                "破损总扣费（元）："+tvMoney.getText().toString()+"\n" +
+                                "应退金额（元）："+s1+"\n"+
+                                "操作员："+ACache.get(AppApplication.getApplication()).getAsString("username")+"\n" +
+                                "打印时间："+str_time+"\n\n\n";
+                try {
+                    byte[] send=message.getBytes("GBK");
+                    PrintService.pl.write(send);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                PrintService.pl.printText("\n");
+                PrintService.pl.write(new byte[] { 0x1d, 0x0c });
                 break;
         }
     }

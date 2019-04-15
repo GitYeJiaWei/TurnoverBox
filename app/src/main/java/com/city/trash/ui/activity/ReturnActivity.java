@@ -55,7 +55,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     private HashMap<String,String> map = new HashMap<>();
     LeaseScanadapter leaseScanadapter = null;
     private ArrayList<String> arrayList = new ArrayList<>();
-    private BaseBean<List<FeeRule>> baseBean = null;
+    private BaseBean<FeeRule> baseBean = null;
 
     @Override
     public int setLayout() {
@@ -78,9 +78,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
         String type = null;
         String name = null;
-        for (int i = 0; i < baseBean.getData().size(); i++) {
-            type = baseBean.getData().get(i).getProductTypeId();
-            name = baseBean.getData().get(i).getProductTypeName();
+        for (int i = 0; i < baseBean.getData().getFeeRules().size(); i++) {
+            type = baseBean.getData().getFeeRules().get(i).getProductTypeId();
+            name = baseBean.getData().getFeeRules().get(i).getProductTypeName();
             if (baseEpc._EPC.length()<=type.length()+1){
                 return;
             }
@@ -116,7 +116,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
         if (intent != null) {
             leaseBean = (LeaseBean) intent.getSerializableExtra("cardCode");
             String Tid = intent.getStringExtra("TID");
-            tvName.setText(leaseBean.getName());
+            tvName.setText(leaseBean.getContactName());
             tvTid.setText(Tid);
         }
         if (leaseBean == null) {
@@ -124,9 +124,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             finish();
         }
 
-        baseBean = (BaseBean<List<FeeRule>>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
+        baseBean = (BaseBean<FeeRule>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
         if (baseBean==null){
-            return;
+            finish();
         }
 
         AppApplication.mReader.setPower(10);
@@ -220,6 +220,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                     readTag(a);
                 }
                 Iterator it = hashMap.keySet().iterator();
+                arrayList.clear();
                 while (it.hasNext()) {
                     String key = (String) it.next();
                     for (int i = 0; i < hashMap.get(key).size(); i++) {

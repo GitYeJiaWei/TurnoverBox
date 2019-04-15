@@ -19,7 +19,7 @@ public class FeeRuleModel implements RuleListContract.IFeeRuleModel {
     }
 
     @Override
-    public Observable<BaseBean<List<FeeRule>>> feeRule() {
+    public Observable<BaseBean<FeeRule>> feeRule() {
         Map<String,String> map = new HashMap<>();
         return mApiService.rulelist(map);
     }

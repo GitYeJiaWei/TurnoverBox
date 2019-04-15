@@ -93,12 +93,12 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
         entity = AppApplication.mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("TID"),
                 Integer.parseInt("0"),
-                Integer.parseInt("4"));
+                Integer.parseInt("6"));
 
         if (entity != null) {
             SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
             cardCode = entity.getData();
-            mPresenter.leaseid("card1");
+            mPresenter.leaseid(cardCode,"1");
         } else {
             SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
             ToastUtil.toast("租赁卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
@@ -122,6 +122,8 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
             intent.putExtra("TID", cardCode);
             intent.putExtra("cardCode", baseBean.getData());
             startActivity(intent);
+        }else {
+            ToastUtil.toast(baseBean.getMessage());
         }
     }
 

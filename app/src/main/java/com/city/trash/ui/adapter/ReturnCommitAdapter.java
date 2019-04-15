@@ -85,16 +85,7 @@ public class ReturnCommitAdapter extends BaseAdapter {
         }
 
         final EPC m1 = (EPC) this.getItem(position);
-        if (m1.getEpc().equals("01")) {
-            listItemView.size.setText("A 类");
-        } else if (m1.getEpc().equals("02")) {
-            listItemView.size.setText("B 类");
-        } else if (m1.getEpc().equals("03")) {
-            listItemView.size.setText("C 类");
-        } else if (m1.getEpc().equals("04")) {
-            listItemView.size.setText("D 类");
-        }
-
+        listItemView.size.setText(m1.getEpc());
         listItemView.num.setText(m1.getNum()+"");
         listItemView.overNum.setText(m1.getOverNum()+"");
         listItemView.overTime.setText(m1.getOverTime()+"");

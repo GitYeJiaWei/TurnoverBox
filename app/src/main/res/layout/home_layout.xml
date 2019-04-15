@@ -33,6 +33,8 @@
             android:weightSum="3">
 
             <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/lin_lease"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"
@@ -50,6 +52,8 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/lin_back"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"
@@ -67,6 +71,8 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/lin_pick"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"
@@ -93,6 +99,8 @@
             android:weightSum="3">
 
             <RelativeLayout
+                android:id="@+id/lin_scan"
+                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"

@@ -29,9 +29,9 @@ public class RuleListPresenter extends BasePresenter<RuleListContract.IFeeRuleMo
         mModel.feeRule()
                 .subscribeOn(Schedulers.io())//访问数据在子线程
                 .observeOn(AndroidSchedulers.mainThread())//拿到数据在主线程
-                .subscribe(new ProgressSubcriber<BaseBean<List<FeeRule>>>(mContext,mView) {
+                .subscribe(new ProgressSubcriber<BaseBean<FeeRule>>(mContext,mView) {
                     @Override
-                    public void onNext(BaseBean<List<FeeRule>> baseBean) {
+                    public void onNext(BaseBean<FeeRule> baseBean) {
                         //当Observable发生事件的时候触发
                         mView.feeRuleResult(baseBean);
                     }

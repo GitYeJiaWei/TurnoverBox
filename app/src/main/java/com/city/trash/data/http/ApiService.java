@@ -40,8 +40,8 @@ public interface ApiService
     Observable<BaseBean<LeaseBean>> leaseid(@QueryMap Map<String,String> params);
 
     //获取押金规则
-    @GET("/api/feerule/GetFeeRuleList")
-    Observable<BaseBean<List<FeeRule>>> rulelist(@QueryMap Map<String,String> params);
+    @GET("/api/User/GetLoginData")
+    Observable<BaseBean<FeeRule>> rulelist(@QueryMap Map<String,String> params);
 
     //生成租赁记录
     @FormUrlEncoded

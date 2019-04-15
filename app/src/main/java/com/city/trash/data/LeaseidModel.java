@@ -18,9 +18,10 @@ public class LeaseidModel implements LeaseidContract.ILeaseidModel{
     }
 
     @Override
-    public Observable<BaseBean<LeaseBean>> leaseid(String cardCode) {
+    public Observable<BaseBean<LeaseBean>> leaseid(String cardCode,String cardType) {
         Map<String,String> map = new HashMap<>();
         map.put("cardCode",cardCode);
+        map.put("cardType",cardType);
         return mApiService.leaseid(map);
     }
 }

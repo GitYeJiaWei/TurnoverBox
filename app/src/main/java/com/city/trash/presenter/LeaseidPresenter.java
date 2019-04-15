@@ -20,12 +20,12 @@ public class LeaseidPresenter extends BasePresenter<LeaseidContract.ILeaseidMode
         super(iLeaseidModel, leaseidView);
     }
 
-    public void leaseid(String cardCode){
+    public void leaseid(String cardCode,String cardType){
         if (!NetUtils.isConnected(mContext)){
             ToastUtil.toast(R.string.error_network_unreachable);
             return;
         }
-        mModel.leaseid(cardCode)
+        mModel.leaseid(cardCode,cardType)
                 .subscribeOn(Schedulers.io())//访问数据在子线程
                 .observeOn(AndroidSchedulers.mainThread())//拿到数据在主线程
                 .subscribe(new ProgressSubcriber<BaseBean<LeaseBean>>(mContext,mView) {

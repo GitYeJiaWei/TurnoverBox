@@ -9,7 +9,7 @@ import io.reactivex.Observable;
 public interface LeaseidContract {
     //Model的接口,数据请求
     interface ILeaseidModel{
-        Observable<BaseBean<LeaseBean>> leaseid(String cardCode);
+        Observable<BaseBean<LeaseBean>> leaseid(String cardCode,String cardType);
     }
 
     //View的接口，表明View要做的事情

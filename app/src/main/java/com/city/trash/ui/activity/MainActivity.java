@@ -9,7 +9,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,7 +25,6 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FeeRule;
-import com.city.trash.bean.LoginBean;
 import com.city.trash.common.ActivityCollecter;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.NetUtils;
@@ -41,7 +39,13 @@ import com.city.trash.ui.adapter.DrawerListContent;
 import com.city.trash.ui.adapter.MyFragmentPagerAdapter;
 import com.city.trash.ui.fragment.BaseFragment;
 import com.city.trash.ui.fragment.HomeFragment;
+import com.city.trash.ui.fragment.LeaseFragment;
+import com.city.trash.ui.fragment.ReturnFragment;
+import com.city.trash.ui.fragment.SettingFragment;
+import com.qs.helper.printer.PrintService;
+import com.qs.helper.printer.PrinterClass;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +58,6 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     private ListView mDrawerList;
     private View headerView;
     private View mNetWorkTips;
-    public LoginBean mUserInfo;
 
     private int pressKey;
     //几个代表页面的常量
@@ -72,6 +75,14 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     private MyFragmentPagerAdapter mAdapter;
     //退出时的时间
     private long mExitTime;
+    private BaseBean<FeeRule> baseBean;
+
+    private HomeFragment myFragment1 =null;
+    private LeaseFragment myFragment2 =null;
+    private ReturnFragment myFragment3 =null;
+    private SettingFragment myFragment4 =null;
+    private List<Fragment> fragments;
+
 
     @Override
     public int setLayout() {
@@ -86,6 +97,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
 
     @Override
     public void init() {
+        mPresenter.feeRule();
         initview();
         selectItem(0);
     }
@@ -129,11 +141,20 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             }
         });
 
-        mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        myFragment1 =new HomeFragment();
+        myFragment2 =new LeaseFragment();
+        myFragment3 =new ReturnFragment();
+        myFragment4 =new SettingFragment();
+        fragments = new ArrayList<>();
+        fragments.add(myFragment1);
+        fragments.add(myFragment2);
+        fragments.add(myFragment3);
+        fragments.add(myFragment4);
+
+
+        mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),fragments);
         bindViews();
         rb_channel.setSelected(true);
-
-        mPresenter.feeRule();
     }
 
     //租赁
@@ -167,15 +188,39 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     }
 
     @Override
-    public void feeRuleResult(BaseBean<List<FeeRule>> baseBean) {
-        if (baseBean==null){
+    public void feeRuleResult(BaseBean<FeeRule> baseBean1) {
+        if (baseBean1==null){
             ToastUtil.toast("获取押金失败");
             finish();
         }
-        if (baseBean.getCode()==0 && baseBean.getData()!=null){
-                ACache.get(AppApplication.getApplication()).put("feeRule", baseBean);
+        if (baseBean1.getCode()==0 && baseBean1.getData()!=null){
+            ACache.get(AppApplication.getApplication()).put("feeRule", baseBean1);
+
+            baseBean = (BaseBean<FeeRule>) ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
+            if (baseBean == null) {
+                return;
+            }
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < baseBean.getData().getPadMenus().size(); i++) {
+                String id = baseBean.getData().getPadMenus().get(i).getId();
+                list.add(id);
+                if (id.equals("1")) {
+                    rb_message.setVisibility(View.VISIBLE);
+                }else if (id.equals("2")){
+                    rb_better.setVisibility(View.VISIBLE);
+                }
+            }
+            if (!list.contains("1")){
+                fragments.remove(1);
+            }
+            if (!list.contains("2")){
+                fragments.remove(2);
+            }
+
+            mAdapter.notifyDataSetChanged();
+
         }else {
-            ToastUtil.toast(baseBean.getMessage());
+            ToastUtil.toast(baseBean1.getMessage());
             finish();
         }
     }
@@ -256,6 +301,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         rb_message = findViewById(R.id.rb_message);
         rb_better = findViewById(R.id.rb_better);
         rb_setting = findViewById(R.id.rb_setting);
+
         rg_tab_bar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -268,10 +314,20 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                         vpager.setCurrentItem(PAGE_TWO);
                         setTitle(mOptionTitles[1]);
                         break;
+                        /*if (rb_message.getVisibility()==View.VISIBLE){
+                            vpager.setCurrentItem(PAGE_TWO);
+                            setTitle(mOptionTitles[1]);
+                            break;
+                        }*/
                     case R.id.rb_better:
                         vpager.setCurrentItem(PAGE_THREE);
                         setTitle(mOptionTitles[2]);
                         break;
+                       /* if (rb_better.getVisibility() == View.VISIBLE){
+                            vpager.setCurrentItem(PAGE_THREE);
+                            setTitle(mOptionTitles[2]);
+                            break;
+                        }*/
                     case R.id.rb_setting:
                         vpager.setCurrentItem(PAGE_FOUR);
                         setTitle(mOptionTitles[5]);
@@ -309,11 +365,27 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                             setTitle(mOptionTitles[1]);
                             rb_message.setSelected(true);
                             break;
+                            /*if (rb_message.getVisibility()==View.VISIBLE){
+                                reselected();
+                                setTitle(mOptionTitles[1]);
+                                rb_message.setSelected(true);
+                                break;
+                            }else {
+                                vpager.setCurrentItem(PAGE_THREE);
+                            }*/
                         case PAGE_THREE:
                             reselected();
                             setTitle(mOptionTitles[2]);
                             rb_better.setSelected(true);
                             break;
+                            /*if (rb_message.getVisibility()==View.VISIBLE){
+                                reselected();
+                                setTitle(mOptionTitles[2]);
+                                rb_better.setSelected(true);
+                                break;
+                            }else {
+                                vpager.setCurrentItem(PAGE_FOUR);
+                            }*/
                         case PAGE_FOUR:
                             reselected();
                             setTitle(mOptionTitles[5]);
@@ -366,24 +438,13 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
         } else {
+            if (PrintService.pl != null  && PrintService.pl.getState() == PrinterClass.STATE_CONNECTED) {
+                //断开打印连接
+                PrintService.pl.disconnect();
+            }
             ActivityCollecter.finishAll();
         }
     }
-
-   /* @Override
-    public void onBackPressed() {
-        mDrawerList.setItemChecked(0, true);
-        setTitle(mOptionTitles[0]);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.mipmap.button_daohang);
-        }
-        try {
-            super.onBackPressed();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     //点击左侧按钮
     @Override

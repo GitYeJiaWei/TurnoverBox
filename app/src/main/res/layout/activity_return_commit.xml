@@ -157,7 +157,7 @@
                 android:id="@+id/tv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="累计退还：10个  应退金额：100元"/>
+                android:text="累计退还：0个  应退金额：0元"/>
 
         </LinearLayout>
 

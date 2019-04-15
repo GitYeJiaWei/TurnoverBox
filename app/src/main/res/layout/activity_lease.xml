@@ -130,7 +130,7 @@
                 android:id="@+id/tv_sum"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="累计租赁：10个  应付金额：100元"/>
+                android:text="累计租赁：0个  应付金额：0元"/>
 
         </LinearLayout>
 

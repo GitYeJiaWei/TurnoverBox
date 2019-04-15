@@ -7,13 +7,11 @@
     android:orientation="vertical"
     tools:context=".ui.activity.HelpActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="*注意点"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="123456789"/>
+        android:text="蓝牙连接成功"/>
+
+
 </LinearLayout>

@@ -147,7 +147,7 @@
                 android:id="@+id/tv_num"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="10个"/>
+                android:text="0个"/>
 
         </LinearLayout>
 

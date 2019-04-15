@@ -30,7 +30,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-
     implementation rootProject.ext.dependencies["appcompat-v7"]
     implementation rootProject.ext.dependencies["design"]
     implementation rootProject.ext.dependencies["support-v4"]
@@ -54,5 +53,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
-
+    implementation files('libs/qsprintersdk.jar')
 }

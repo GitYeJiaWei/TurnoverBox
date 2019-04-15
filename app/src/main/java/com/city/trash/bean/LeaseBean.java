@@ -20,6 +20,15 @@ public class LeaseBean extends BaseEntity {
 
     private String Id;
     private String Name;
+    private String ContactName;
+
+    public String getContactName() {
+        return ContactName;
+    }
+
+    public void setContactName(String contactName) {
+        ContactName = contactName;
+    }
 
     public String getId() {
         return Id;
