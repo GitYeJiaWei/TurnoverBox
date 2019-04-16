@@ -3,6 +3,7 @@ package com.city.trash.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -15,9 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,23 +54,11 @@ import java.util.List;
 public class MainActivity extends BaseActivity<RuleListPresenter> implements RuleListContract.FeeRuleView {
     public static final String TAG_CONTENT_FRAGMENT = "ContentFragment";
     private String[] mOptionTitles;
+    private int[] mBitMaps;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private View headerView;
     private View mNetWorkTips;
-
-    private int pressKey;
-    //几个代表页面的常量
-    public static final int PAGE_ONE = 0;
-    public static final int PAGE_TWO = 1;
-    public static final int PAGE_THREE = 2;
-    public static final int PAGE_FOUR = 3;
-
-    private RadioGroup rg_tab_bar;
-    private RadioButton rb_channel;
-    private RadioButton rb_message;
-    private RadioButton rb_better;
-    private RadioButton rb_setting;
     private ViewPager vpager;
     private MyFragmentPagerAdapter mAdapter;
     //退出时的时间
@@ -82,7 +70,9 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     private ReturnFragment myFragment3 =null;
     private SettingFragment myFragment4 =null;
     private List<Fragment> fragments;
-
+    private List<String> titleList;
+    private List<Integer> picList;
+    private TabLayout tablayout;
 
     @Override
     public int setLayout() {
@@ -113,7 +103,6 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     }
 
     private void initview() {
-        mOptionTitles = getResources().getStringArray(R.array.options_array);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerList = findViewById(R.id.left_drawer);
 
@@ -133,6 +122,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         mDrawerList.setAdapter(new DrawerListAdapter(this, R.layout.drawer_list_item, DrawerListContent.ITEMS));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        //网络检测
         mNetWorkTips = findViewById(R.id.network_view);
         mNetWorkTips.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,26 +140,76 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         fragments.add(myFragment2);
         fragments.add(myFragment3);
         fragments.add(myFragment4);
+        mOptionTitles = getResources().getStringArray(R.array.options_array);
+        titleList = new ArrayList<>();
+        titleList.add(mOptionTitles[0]);
+        titleList.add(mOptionTitles[1]);
+        titleList.add(mOptionTitles[2]);
+        titleList.add(mOptionTitles[5]);
+        mBitMaps = new int[]{R.mipmap.home,R.mipmap.zulin,
+                R.mipmap.back,R.mipmap.set};
+        picList = new ArrayList<>();
+        picList.add(mBitMaps[0]);
+        picList.add(mBitMaps[1]);
+        picList.add(mBitMaps[2]);
+        picList.add(mBitMaps[3]);
 
+        mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),fragments,titleList);
 
-        mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),fragments);
-        bindViews();
-        rb_channel.setSelected(true);
+        tablayout = findViewById(R.id.tablayout);
+        vpager = findViewById(R.id.vpager);
+        vpager.setAdapter(mAdapter);
+        vpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = (BaseFragment)mAdapter.instantiateItem(vpager,vpager.getCurrentItem());
+                if (fragment==myFragment2){
+                    setTitle(mOptionTitles[1]);
+                }else if (fragment == myFragment3){
+                    setTitle(mOptionTitles[2]);
+                }else if (fragment == myFragment4){
+                    setTitle(mOptionTitles[5]);
+                }else {
+                    setTitle(mOptionTitles[0]);
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     //租赁
     public void isReceiving(View view) {
-        vpager.setCurrentItem(PAGE_TWO);
+        vpager.setCurrentItem(1);
     }
 
     //退还
     public void isGrounding(View view) {
-        vpager.setCurrentItem(PAGE_THREE);
+        if (fragments.size()==4){
+            vpager.setCurrentItem(2);
+        }else {
+            vpager.setCurrentItem(1);
+        }
     }
 
     //设置
     public void isSetting(View view) {
-        vpager.setCurrentItem(PAGE_FOUR);
+        if (fragments.size()==4){
+            vpager.setCurrentItem(3);
+        }else if (fragments.size()==3){
+            vpager.setCurrentItem(2);
+        }else {
+            vpager.setCurrentItem(1);
+        }
     }
 
     //退出
@@ -204,20 +244,33 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             for (int i = 0; i < baseBean.getData().getPadMenus().size(); i++) {
                 String id = baseBean.getData().getPadMenus().get(i).getId();
                 list.add(id);
-                if (id.equals("1")) {
-                    rb_message.setVisibility(View.VISIBLE);
-                }else if (id.equals("2")){
-                    rb_better.setVisibility(View.VISIBLE);
-                }
             }
             if (!list.contains("1")){
-                fragments.remove(1);
+                fragments.remove(myFragment2);
+                titleList.remove(mOptionTitles[1]);
             }
             if (!list.contains("2")){
-                fragments.remove(2);
+                fragments.remove(myFragment3);
+                titleList.remove(mOptionTitles[2]);
+            }
+            mAdapter.notifyDataSetChanged();
+
+            tablayout.setupWithViewPager(vpager);
+            //获取当前tab数量
+            int tabCount = tablayout.getTabCount();
+            //遍历循环tab数量
+            for(int i=0;i<tabCount;i++){
+                //获取每个tab
+                TabLayout.Tab tab = tablayout.getTabAt(i);
+                View view = View.inflate(this, R.layout.tab_view, null);
+                ImageView iv =  view.findViewById(R.id.iv);
+                TextView tv =  view.findViewById(R.id.tv);
+                tv.setText(titleList.get(i));
+                iv.setImageResource(picList.get(i));
+                //给tab设置view
+                tab.setCustomView(view);
             }
 
-            mAdapter.notifyDataSetChanged();
 
         }else {
             ToastUtil.toast(baseBean1.getMessage());
@@ -295,122 +348,9 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
-    private void bindViews() {
-        rg_tab_bar = findViewById(R.id.rg_tab_bar);
-        rb_channel = findViewById(R.id.rb_channel);
-        rb_message = findViewById(R.id.rb_message);
-        rb_better = findViewById(R.id.rb_better);
-        rb_setting = findViewById(R.id.rb_setting);
-
-        rg_tab_bar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_channel:
-                        vpager.setCurrentItem(PAGE_ONE);
-                        setTitle(mOptionTitles[0]);
-                        break;
-                    case R.id.rb_message:
-                        vpager.setCurrentItem(PAGE_TWO);
-                        setTitle(mOptionTitles[1]);
-                        break;
-                        /*if (rb_message.getVisibility()==View.VISIBLE){
-                            vpager.setCurrentItem(PAGE_TWO);
-                            setTitle(mOptionTitles[1]);
-                            break;
-                        }*/
-                    case R.id.rb_better:
-                        vpager.setCurrentItem(PAGE_THREE);
-                        setTitle(mOptionTitles[2]);
-                        break;
-                       /* if (rb_better.getVisibility() == View.VISIBLE){
-                            vpager.setCurrentItem(PAGE_THREE);
-                            setTitle(mOptionTitles[2]);
-                            break;
-                        }*/
-                    case R.id.rb_setting:
-                        vpager.setCurrentItem(PAGE_FOUR);
-                        setTitle(mOptionTitles[5]);
-                        break;
-                }
-            }
-        });
-
-        vpager = findViewById(R.id.vpager);
-        vpager.setAdapter(mAdapter);
-        vpager.setCurrentItem(0);
-        vpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                //state的状态有三种，0表示什么都没做，1正在滑动，2滑动完毕
-                if (state == 2) {
-                    switch (vpager.getCurrentItem()) {
-                        case PAGE_ONE:
-                            reselected();
-                            setTitle(mOptionTitles[0]);
-                            rb_channel.setSelected(true);
-                            break;
-                        case PAGE_TWO:
-                            reselected();
-                            setTitle(mOptionTitles[1]);
-                            rb_message.setSelected(true);
-                            break;
-                            /*if (rb_message.getVisibility()==View.VISIBLE){
-                                reselected();
-                                setTitle(mOptionTitles[1]);
-                                rb_message.setSelected(true);
-                                break;
-                            }else {
-                                vpager.setCurrentItem(PAGE_THREE);
-                            }*/
-                        case PAGE_THREE:
-                            reselected();
-                            setTitle(mOptionTitles[2]);
-                            rb_better.setSelected(true);
-                            break;
-                            /*if (rb_message.getVisibility()==View.VISIBLE){
-                                reselected();
-                                setTitle(mOptionTitles[2]);
-                                rb_better.setSelected(true);
-                                break;
-                            }else {
-                                vpager.setCurrentItem(PAGE_FOUR);
-                            }*/
-                        case PAGE_FOUR:
-                            reselected();
-                            setTitle(mOptionTitles[5]);
-                            rb_setting.setSelected(true);
-                            break;
-                    }
-                }
-            }
-        });
-    }
-
-    private void reselected() {
-        rb_setting.setSelected(false);
-        rb_message.setSelected(false);
-        rb_better.setSelected(false);
-        rb_channel.setSelected(false);
-    }
-
-    private static String makeFragmentName(int viewId, long id) {
-        return "android:switcher:" + viewId + ":" + id;
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(makeFragmentName(vpager.getId(), vpager.getCurrentItem()));
+        Fragment fragment = (BaseFragment)mAdapter.instantiateItem(vpager,vpager.getCurrentItem());
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
                 ((BaseFragment) fragment).myOnKeyDwon();
@@ -424,7 +364,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(makeFragmentName(vpager.getId(), vpager.getCurrentItem()));
+        Fragment fragment = (BaseFragment)mAdapter.instantiateItem(vpager,vpager.getCurrentItem());
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
                 ((BaseFragment) fragment).myOnKeyUp();

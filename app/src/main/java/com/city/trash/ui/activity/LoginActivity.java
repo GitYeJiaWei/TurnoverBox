@@ -7,12 +7,14 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.LoginBean;
+import com.city.trash.common.ActivityCollecter;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -152,5 +154,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void dismissLoading() {
         btnLogin.showButtonText();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
+            ActivityCollecter.finishAll();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

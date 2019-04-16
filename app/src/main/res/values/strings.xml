@@ -50,7 +50,7 @@
     <string name="lease_name">租赁人姓名：</string>
     <string name="lease_next">扫描货物</string>
     <string name="lease_scan">扫描租赁卡</string>
-    <string name="lease_back">扫描退换卡</string>
+    <string name="lease_back">扫描退还卡</string>
     <string name="lease_money">合计：</string>
     <string name="lease_commit">出库提交</string>
     <string name="lease_print">打印</string>

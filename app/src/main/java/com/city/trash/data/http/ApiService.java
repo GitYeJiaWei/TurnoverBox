@@ -20,8 +20,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 
-public interface ApiService
-{
+public interface ApiService {
     //String BASE_URL = "http://192.168.66.3:8112/";
     String BASE_URL = "http://mall.ioter-e.com:8112/";
 

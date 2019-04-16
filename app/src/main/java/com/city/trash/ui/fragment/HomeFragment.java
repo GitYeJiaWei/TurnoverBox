@@ -1,9 +1,7 @@
 package com.city.trash.ui.fragment;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.city.trash.AppApplication;
@@ -14,8 +12,6 @@ import com.city.trash.common.util.ACache;
 import com.city.trash.di.component.AppComponent;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * 首页
