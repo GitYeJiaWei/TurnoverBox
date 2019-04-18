@@ -228,7 +228,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                                 "累计退还（个）："+num+"\n"+
                                 "破损总扣费（元）："+tvMoney.getText().toString()+"\n" +
                                 "应退金额（元）："+s1+"\n"+
-                                "操作员："+ACache.get(AppApplication.getApplication()).getAsString("username")+"\n" +
+                                "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
                                 "打印时间："+str_time+"\n\n\n";
                 try {
                     byte[] send=message.getBytes("GBK");

@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -90,6 +91,11 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         mPresenter.feeRule();
         initview();
         selectItem(0);
+        String key1 = ACache.get(AppApplication.getApplication()).getAsString("key1");
+        if (TextUtils.isEmpty(key1)) {
+            key1 = "10";
+        }
+        AppApplication.mReader.setPower(Integer.valueOf(key1));
     }
 
     //网络检测
@@ -116,7 +122,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         headerView = LayoutInflater.from(this).inflate(R.layout.layout_header, mDrawerList, false);
         mDrawerList.addHeaderView(headerView);
         TextView mTxt_username = headerView.findViewById(R.id.txt_username);
-        mTxt_username.setText(ACache.get(AppApplication.getApplication()).getAsString("username"));
+        mTxt_username.setText(ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME));
 
         mDrawerLayout.setDrawerShadow(R.mipmap.drawer_shadow, GravityCompat.START);
         mDrawerList.setAdapter(new DrawerListAdapter(this, R.layout.drawer_list_item, DrawerListContent.ITEMS));

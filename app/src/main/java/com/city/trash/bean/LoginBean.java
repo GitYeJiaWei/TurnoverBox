@@ -14,6 +14,15 @@ public class LoginBean extends BaseEntity {
      */
 
     private String access_token;
+    private String RealName;
+
+    public String getRealName() {
+        return RealName;
+    }
+
+    public void setRealName(String realName) {
+        RealName = realName;
+    }
 
     public String getAccess_token() {
         return access_token;

@@ -83,7 +83,7 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
         if (DateUtil.isFastClick()){
             return;
         }
-        AppApplication.mReader.setPower(10);
+        //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = AppApplication.mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("TID"),

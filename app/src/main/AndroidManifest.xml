@@ -100,14 +100,17 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.BleActivity"
+        <activity
+            android:name=".ui.activity.BleActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".ui.activity.PrintSettingActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.activity.PrintSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.activity.PowerActivity"></activity>
     </application>
 
 </manifest>

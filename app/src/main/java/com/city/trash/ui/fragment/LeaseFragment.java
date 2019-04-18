@@ -88,7 +88,7 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
         if (DateUtil.isFastClick()){
             return;
         }
-        AppApplication.mReader.setPower(10);
+        //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = AppApplication.mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("TID"),

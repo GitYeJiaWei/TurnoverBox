@@ -90,7 +90,6 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             finish();
         }
 
-        AppApplication.mReader.setPower(10);
         setTitle("扫描出库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
@@ -248,7 +247,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 "--------------------------\n" +
                 "累计租赁（个）："+map.size()+"\n"+
                 "应付金额（元）："+sum+"\n"+
-                "操作员："+ACache.get(AppApplication.getApplication()).getAsString("username")+"\n" +
+                "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
                 "打印时间："+str_time+"\n\n\n";
                 try {
                     byte[] send=message.getBytes("GBK");

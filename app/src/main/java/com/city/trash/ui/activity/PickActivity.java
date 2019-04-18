@@ -73,7 +73,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     public void init() {
         setTitle("报废登记");
         linLease.setVisibility(View.GONE);
-        AppApplication.mReader.setPower(10);
+        //AppApplication.mReader.setPower(10);
         hashMap.clear();
         map.clear();
         leaseScanadapter = new LeaseScanadapter(this, "pick");

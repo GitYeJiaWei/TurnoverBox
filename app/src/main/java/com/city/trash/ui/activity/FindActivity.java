@@ -115,7 +115,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
     }
 
     private void readTag() {
-        AppApplication.mReader.setPower(10);
+        //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = AppApplication.mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("UII"),

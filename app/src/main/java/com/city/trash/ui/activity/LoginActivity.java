@@ -45,6 +45,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @BindView(R.id.btn_login)
     LoadingButton btnLogin;
 
+    public static final String REAL_NAME = "realname";
     public static final String USER_NAME = "username";
     public static final String PASS_WORD = "password";
     public static final String TOKEN ="token";
@@ -115,6 +116,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             ToastUtil.toast("登陆失败");
             return;
         }
+        ACache.get(AppApplication.getApplication()).put(REAL_NAME, baseBean.getRealName());
         ACache.get(AppApplication.getApplication()).put(USER_NAME, txtMobi.getText().toString());
         ACache.get(AppApplication.getApplication()).put(PASS_WORD, txtPassword.getText().toString());
         ACache.get(AppApplication.getApplication()).put(TOKEN, baseBean.getAccess_token());

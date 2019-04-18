@@ -12,6 +12,7 @@ import com.city.trash.di.component.AppComponent;
 import com.city.trash.ui.activity.BleActivity;
 import com.city.trash.ui.activity.HelpActivity;
 import com.city.trash.ui.activity.InformActivity;
+import com.city.trash.ui.activity.PowerActivity;
 import com.city.trash.ui.activity.UserActivity;
 
 import butterknife.BindView;
@@ -67,7 +68,7 @@ public class SettingFragment extends BaseFragment {
                 startActivity(new Intent(getActivity(), UserActivity.class));
                 break;
             case R.id.lin_message:
-                startActivity(new Intent(getActivity(), HelpActivity.class));
+                startActivity(new Intent(getActivity(), PowerActivity.class));
                 break;
             case R.id.lin_ble:
                 startActivity(new Intent(getActivity(), BleActivity.class));

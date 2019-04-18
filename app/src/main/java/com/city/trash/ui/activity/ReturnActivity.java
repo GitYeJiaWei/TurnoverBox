@@ -129,7 +129,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             finish();
         }
 
-        AppApplication.mReader.setPower(10);
+        //AppApplication.mReader.setPower(10);
         setTitle("扫描入库");
         linLease.setVisibility(View.GONE);
         hashMap.clear();
