@@ -280,7 +280,6 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             epc.setData2(name);
             epc.setData3(num);
             epc.setData4(aCache.getAsString("username"));
-
             //使用getAsObject()，直接进行强转
             ArrayList<EPC> leaseResultlist = (ArrayList<EPC>) aCache.getAsObject("leaseResult");
             if (leaseResultlist==null){
@@ -289,6 +288,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             leaseResultlist.add(epc);
             aCache.put("leaseResult",leaseResultlist,ACache.TIME_DAY);
             startActivity(new Intent(this,MainActivity.class));
+            finish();
         }else {
             ToastUtil.toast(baseBean.getMessage());
         }

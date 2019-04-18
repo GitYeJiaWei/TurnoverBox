@@ -174,6 +174,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             leaseResultlist.add(epc);
             aCache.put("returnResult",leaseResultlist,ACache.TIME_DAY);
             startActivity(new Intent(this,MainActivity.class));
+            finish();
         }else {
             ToastUtil.toast(baseBean.getMessage());
         }

@@ -145,6 +145,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             return;
         }
         if (baseBean.getCode()==0 && baseBean.getData().size()>0){
+            if (a==2){
+                readTag(a);
+            }
             String TID = tvTid.getText().toString();
             String Name = tvName.getText().toString();
             Intent intent = new Intent(ReturnActivity.this,ReturnCommitActivity.class);
