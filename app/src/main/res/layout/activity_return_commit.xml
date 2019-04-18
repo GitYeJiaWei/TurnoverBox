@@ -61,7 +61,7 @@
 
         <EditText
             android:id="@+id/tv_money"
-            android:inputType="number"
+            android:inputType="number|numberDecimal"
             android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"

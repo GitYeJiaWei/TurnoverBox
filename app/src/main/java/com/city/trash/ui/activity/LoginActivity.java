@@ -112,7 +112,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void loginResult(LoginBean baseBean) {
         if (baseBean == null) {
-            //ToastUtil.toast("操作失败");
+            ToastUtil.toast("登陆失败");
             return;
         }
         ACache.get(AppApplication.getApplication()).put(USER_NAME, txtMobi.getText().toString());

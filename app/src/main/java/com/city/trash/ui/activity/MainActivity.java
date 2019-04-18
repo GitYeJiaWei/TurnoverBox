@@ -51,7 +51,7 @@ import java.util.List;
 /**
  *
  */
-public class MainActivity extends BaseActivity<RuleListPresenter> implements RuleListContract.FeeRuleView {
+public class MainActivity extends BaseActivity<RuleListPresenter> implements RuleListContract.FeeRuleView,HomeFragment.CallBackValue {
     public static final String TAG_CONTENT_FRAGMENT = "ContentFragment";
     private String[] mOptionTitles;
     private int[] mBitMaps;
@@ -187,44 +187,31 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         });
     }
 
-    //租赁
-    public void isReceiving(View view) {
-        vpager.setCurrentItem(1);
-    }
-
-    //退还
-    public void isGrounding(View view) {
-        if (fragments.size()==4){
-            vpager.setCurrentItem(2);
-        }else {
+    @Override
+    public void SendMessageValue(String strValue) {
+        if (strValue.equals("租赁")){
             vpager.setCurrentItem(1);
+        }else if (strValue.equals("退还")){
+            if (fragments.size()==4){
+                vpager.setCurrentItem(2);
+            }else {
+                vpager.setCurrentItem(1);
+            }
+        }else if (strValue.equals("设置")){
+            if (fragments.size()==4){
+                vpager.setCurrentItem(3);
+            }else if (fragments.size()==3){
+                vpager.setCurrentItem(2);
+            }else {
+                vpager.setCurrentItem(1);
+            }
+        }else if (strValue.equals("退出")){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }else if (strValue.equals("报废登记")){
+            startActivity(new Intent(MainActivity.this, PickActivity.class));
+        }else if (strValue.equals("扫码查询")){
+            startActivity(new Intent(MainActivity.this,FindActivity.class));
         }
-    }
-
-    //设置
-    public void isSetting(View view) {
-        if (fragments.size()==4){
-            vpager.setCurrentItem(3);
-        }else if (fragments.size()==3){
-            vpager.setCurrentItem(2);
-        }else {
-            vpager.setCurrentItem(1);
-        }
-    }
-
-    //退出
-    public void isBacking(View view){
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-    }
-
-    //报废登记
-    public void isPicking(View view){
-        startActivity(new Intent(MainActivity.this, PickActivity.class));
-    }
-
-    //扫码查询
-    public void isFinding(View view){
-        startActivity(new Intent(MainActivity.this,FindActivity.class));
     }
 
     @Override

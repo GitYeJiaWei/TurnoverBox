@@ -224,6 +224,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             case R.id.btn_print:
                 if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
                     ToastUtil.toast("请先到设置中连接打印机");
+                    startActivity(new Intent(this,BleActivity.class));
                     return;
                 }
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

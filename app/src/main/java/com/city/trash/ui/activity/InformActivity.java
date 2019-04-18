@@ -38,11 +38,10 @@ public class InformActivity extends BaseActivity {
         String ip = ACache.get(AppApplication.getApplication()).getAsString("ip");
         String host = ACache.get(AppApplication.getApplication()).getAsString("host");
         if (ip == null) {
-            //ip = "192.168.66.3";
-            ip = "mall.ioter-e.com";
+            ip = "39.100.19.127";
         }
         if (host == null){
-            host = "8112";
+            host = "8081";
         }
         etIp.setText(ip);
         etHost.setText(host);

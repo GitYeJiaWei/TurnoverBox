@@ -2,6 +2,7 @@ package com.city.trash.ui.activity;
 
 import android.content.Intent;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.EPC;
 import com.city.trash.bean.ReturnBean;
+import com.city.trash.common.EditInputFilter;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -138,6 +140,11 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
 
             }
         });
+
+        //EditInputFilter.MAX_VALUE = 4;
+        InputFilter[] filters = {new EditInputFilter()};
+
+        tvMoney.setFilters(filters);
     }
 
     @Override
@@ -195,6 +202,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             case R.id.btn_print:
                 if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
                     ToastUtil.toast("请先到设置中连接打印机");
+                    startActivity(new Intent(this,BleActivity.class));
                     return;
                 }
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
