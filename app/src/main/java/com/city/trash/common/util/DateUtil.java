@@ -896,7 +896,7 @@ public class DateUtil
     public static boolean isFastClick() {
         boolean flag = true;
         long currentClickTime = System.currentTimeMillis();
-        if ((currentClickTime - lastClickTime) >= 2000) {
+        if ((currentClickTime - lastClickTime) >= 500) {
             flag = false;
         }
         lastClickTime = currentClickTime;

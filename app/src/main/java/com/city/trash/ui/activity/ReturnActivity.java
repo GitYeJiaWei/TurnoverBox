@@ -1,6 +1,7 @@
 package com.city.trash.ui.activity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -164,7 +165,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public void showError(String msg) {
-        super.showError(msg);
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     @Override

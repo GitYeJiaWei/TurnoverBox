@@ -2,6 +2,7 @@ package com.city.trash.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,11 +95,15 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
                 RFIDWithUHF.BankEnum.valueOf("TID"),
                 Integer.parseInt("0"),
                 Integer.parseInt("6"));
-
         if (entity != null) {
-            SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
             cardCode = entity.getData();
-            mPresenter.leaseid(cardCode,"1");
+            if (!TextUtils.isEmpty(cardCode)){
+                SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
+                mPresenter.leaseid(cardCode,"1");
+            }else {
+                SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
+                ToastUtil.toast("租赁卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
+            }
         } else {
             SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
             ToastUtil.toast("租赁卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
@@ -129,7 +134,7 @@ public class LeaseFragment extends BaseFragment<LeaseidPresenter> implements Lea
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("扫描租赁卡失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
 }

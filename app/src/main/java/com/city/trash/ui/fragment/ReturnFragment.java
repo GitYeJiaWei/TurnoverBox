@@ -1,6 +1,8 @@
 package com.city.trash.ui.fragment;
 
 import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -89,11 +91,15 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
                 RFIDWithUHF.BankEnum.valueOf("TID"),
                 Integer.parseInt("0"),
                 Integer.parseInt("6"));
-
-        if (entity!=null){
-            SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
+        if (entity != null) {
             cardCode = entity.getData();
-            mPresenter.leaseid(cardCode,"2");
+            if (!TextUtils.isEmpty(cardCode)){
+                SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
+                mPresenter.leaseid(cardCode,"2");
+            }else {
+                SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
+                ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
+            }
         }else {
             SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
             ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
@@ -107,6 +113,8 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
 
     @Override
     public void leaseidResult(BaseBean<LeaseBean> baseBean) {
+        Log.d("ReToken",ACache.get(AppApplication.getApplication()).getAsString("token"));
+
         if (baseBean==null){
             ToastUtil.toast("扫描退还卡失败");
             return;
@@ -124,6 +132,6 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("扫描退还卡失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 }

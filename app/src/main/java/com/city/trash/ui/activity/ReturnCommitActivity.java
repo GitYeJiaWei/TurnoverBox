@@ -1,5 +1,7 @@
 package com.city.trash.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -65,6 +67,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
     private int num =0;
     String id = null;
     String listEpcJson = null;
+    private String leaseResult = null;
 
     @Override
     public int setLayout() {
@@ -157,7 +160,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             ToastUtil.toast("退还成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            String leaseResult = baseBean.getData();
+            leaseResult = baseBean.getData();
             String name = tvName.getText().toString();
 
             EPC epc = new EPC();
@@ -173,16 +176,93 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             }
             leaseResultlist.add(epc);
             aCache.put("returnResult",leaseResultlist,ACache.TIME_DAY);
-            startActivity(new Intent(this,MainActivity.class));
-            finish();
+
+            createDialog();
         }else {
             ToastUtil.toast(baseBean.getMessage());
         }
     }
 
+    private void print(){
+        if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
+            ToastUtil.toast("请先到设置中连接打印机");
+            startActivity(new Intent(this,BleActivity.class));
+            return;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String str_time = simpleDateFormat.format(date);
+
+        String mess="";
+        for (int i = 0; i < epclist.size(); i++) {
+            String epc = epclist.get(i).getEpc();
+            String num1 = epclist.get(i).getNum()+"";
+            String overNum = epclist.get(i).getOverNum()+"";
+            String overTime = epclist.get(i).getOverTime()+"";
+            mess += epc+" |  "+num1+" |    "+overNum+"   |    "+overTime+"\n";
+        }
+        String message =
+                "*********退还信息*********\n" +
+                        "退还单号："+leaseResult+"\n" +
+                        "退还人："+tvName.getText().toString()+"\n" +
+                        "退还卡："+tvTid.getText().toString()+"\n" +
+                        "--------------------------\n" +
+                        "规格|数量|超时数量|超时天数\n" +
+                        mess+
+                        "--------------------------\n" +
+                        "累计退还（个）："+num+"\n"+
+                        "破损总扣费（元）："+tvMoney.getText().toString()+"\n" +
+                        "应退金额（元）："+s1+"\n"+
+                        "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
+                        "打印时间："+str_time+"\n\n\n";
+        try {
+            byte[] send=message.getBytes("GBK");
+            PrintService.pl.write(send);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        PrintService.pl.printText("\n");
+        PrintService.pl.write(new byte[] { 0x1d, 0x0c });
+        startActivity(new Intent(ReturnCommitActivity.this,MainActivity.class));
+        finish();
+    }
+
+    private void createDialog(){
+        if (TextUtils.isEmpty(leaseResult)){
+            ToastUtil.toast("请先提交再打印！");
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提交成功：");
+        builder.setMessage("是否打印小票?");
+        builder.setIcon(R.mipmap.ic_launcher_round);
+        //点击对话框以外的区域是否让对话框消失
+        builder.setCancelable(true);
+        //设置正面按钮
+        builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                print();
+                dialog.dismiss();
+            }
+        });
+        //设置反面按钮
+        builder.setNegativeButton("不是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                startActivity(new Intent(ReturnCommitActivity.this,MainActivity.class));
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        //显示对话框
+        dialog.show();
+    }
+
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("退还失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
 
@@ -201,44 +281,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                 mPresenter.CreateReturn(id,damageFee+"",listEpcJson);
                 break;
             case R.id.btn_print:
-                if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
-                    ToastUtil.toast("请先到设置中连接打印机");
-                    startActivity(new Intent(this,BleActivity.class));
-                    return;
-                }
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(System.currentTimeMillis());
-                String str_time = simpleDateFormat.format(date);
-
-                String mess="";
-                for (int i = 0; i < epclist.size(); i++) {
-                    String epc = epclist.get(i).getEpc();
-                    String num1 = epclist.get(i).getNum()+"";
-                    String overNum = epclist.get(i).getOverNum()+"";
-                    String overTime = epclist.get(i).getOverTime()+"";
-                    mess += epc+" |  "+num1+" |    "+overNum+"   |    "+overTime+"\n";
-                }
-                String message =
-                                "*********退还信息*********\n" +
-                                "退还人："+tvName.getText().toString()+"\n" +
-                                "退还卡："+tvTid.getText().toString()+"\n" +
-                                "--------------------------\n" +
-                                "规格|数量|超时数量|超时天数\n" +
-                                mess+
-                                "--------------------------\n" +
-                                "累计退还（个）："+num+"\n"+
-                                "破损总扣费（元）："+tvMoney.getText().toString()+"\n" +
-                                "应退金额（元）："+s1+"\n"+
-                                "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
-                                "打印时间："+str_time+"\n\n\n";
-                try {
-                    byte[] send=message.getBytes("GBK");
-                    PrintService.pl.write(send);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                PrintService.pl.printText("\n");
-                PrintService.pl.write(new byte[] { 0x1d, 0x0c });
+                createDialog();
                 break;
         }
     }

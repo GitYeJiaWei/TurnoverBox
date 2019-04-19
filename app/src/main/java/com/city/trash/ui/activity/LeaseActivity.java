@@ -1,6 +1,10 @@
 package com.city.trash.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -64,6 +68,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     private HashMap<String, String> map = new HashMap<>();
     private BaseBean<FeeRule> baseBean = null;
     private double sum = 0;
+    String leaseResult = null;
 
     @Override
     public int setLayout() {
@@ -221,44 +226,87 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), leaseBean.getId());
                 break;
             case R.id.btn_print:
-                if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
-                    ToastUtil.toast("请先到设置中连接打印机");
-                    startActivity(new Intent(this,BleActivity.class));
-                    return;
+                if (a==2){
+                    readTag(a);
                 }
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(System.currentTimeMillis());
-                String str_time = simpleDateFormat.format(date);
-
-                String mess="";
-                for (int i = 0; i < epclist.size(); i++) {
-                    String epc = epclist.get(i).getEpc();
-                    String data = epclist.get(i).getData2();
-                    String money = epclist.get(i).getMoney()+"";
-                    mess += epc+"    |    "+data+"     |   "+money+"\n";
-                }
-                String message =
-                "*********租赁信息*********\n" +
-                "租赁人："+leaseBean.getContactName()+"\n" +
-                "租赁卡："+tvTid.getText().toString()+"\n" +
-                "--------------------------\n" +
-                "规格   |   数量   |   押金\n" +
-                 mess+
-                "--------------------------\n" +
-                "累计租赁（个）："+map.size()+"\n"+
-                "应付金额（元）："+sum+"\n"+
-                "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
-                "打印时间："+str_time+"\n\n\n";
-                try {
-                    byte[] send=message.getBytes("GBK");
-                    PrintService.pl.write(send);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                PrintService.pl.printText("\n");
-                PrintService.pl.write(new byte[] { 0x1d, 0x0c });
+                createDialog();
                 break;
         }
+    }
+
+    private void print(){
+        if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
+            ToastUtil.toast("请先到设置中连接打印机");
+            startActivity(new Intent(LeaseActivity.this,BleActivity.class));
+            return;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String str_time = simpleDateFormat.format(date);
+
+        String mess="";
+        for (int i = 0; i < epclist.size(); i++) {
+            String epc = epclist.get(i).getEpc();
+            String data = epclist.get(i).getData2();
+            String money = epclist.get(i).getMoney()+"";
+            mess += epc+"    |    "+data+"     |   "+money+"\n";
+        }
+        String message =
+                "*********租赁信息*********\n" +
+                        "租赁单号："+leaseResult+"\n" +
+                        "租赁人："+leaseBean.getContactName()+"\n" +
+                        "租赁卡："+tvTid.getText().toString()+"\n" +
+                        "--------------------------\n" +
+                        "规格   |   数量   |   押金\n" +
+                        mess+
+                        "--------------------------\n" +
+                        "累计租赁（个）："+map.size()+"\n"+
+                        "应付金额（元）："+sum+"\n"+
+                        "操作员："+ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME)+"\n" +
+                        "打印时间："+str_time+"\n\n\n";
+        try {
+            byte[] send=message.getBytes("GBK");
+            PrintService.pl.write(send);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        PrintService.pl.printText("\n");
+        PrintService.pl.write(new byte[] { 0x1d, 0x0c });
+        startActivity(new Intent(LeaseActivity.this,MainActivity.class));
+        finish();
+    }
+
+    private void createDialog(){
+        if (TextUtils.isEmpty(leaseResult)){
+            ToastUtil.toast("请先提交再打印！");
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提交成功：");
+        builder.setMessage("是否打印小票?");
+        builder.setIcon(R.mipmap.ic_launcher_round);
+        //点击对话框以外的区域是否让对话框消失
+        builder.setCancelable(true);
+        //设置正面按钮
+        builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                print();
+                dialog.dismiss();
+            }
+        });
+        //设置反面按钮
+        builder.setNegativeButton("不是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                startActivity(new Intent(LeaseActivity.this,MainActivity.class));
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        //显示对话框
+        dialog.show();
     }
 
     @Override
@@ -271,7 +319,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             ToastUtil.toast("出库提交成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            String leaseResult = baseBean.getData();
+            leaseResult = baseBean.getData();
             String name = tvName.getText().toString();
             String num = map.size()+"";
 
@@ -287,8 +335,8 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             }
             leaseResultlist.add(epc);
             aCache.put("leaseResult",leaseResultlist,ACache.TIME_DAY);
-            startActivity(new Intent(this,MainActivity.class));
-            finish();
+
+            createDialog();
         }else {
             ToastUtil.toast(baseBean.getMessage());
         }
@@ -297,7 +345,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("出库提交失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     @Override

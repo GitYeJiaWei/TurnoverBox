@@ -1,6 +1,6 @@
 package com.city.trash.ui.fragment;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +33,8 @@ public abstract class BaseFragment<T extends BasePresenter> extends BackPressedF
     protected AppCompatActivity mActivity;
 
     protected CustomProgressDialog progressDialog;
+
+    private ProgressDialog waitDialog = null;
 
 
     @Inject
@@ -91,16 +93,31 @@ public abstract class BaseFragment<T extends BasePresenter> extends BackPressedF
     @Override
     public void showLoading()
     {
+        if (waitDialog == null)
+        {
+            waitDialog = new ProgressDialog(getContext());
+        }
+        waitDialog.setMessage("加载中...");
+        waitDialog.show();
     }
 
     @Override
     public void showError(String msg)
     {
+        if (waitDialog != null)
+        {
+            waitDialog.setMessage(msg);
+            waitDialog.show();
+        }
     }
 
     @Override
     public void dismissLoading()
     {
+        if (waitDialog != null && waitDialog.isShowing())
+        {
+            waitDialog.dismiss();
+        }
     }
 
     public abstract int setLayout();

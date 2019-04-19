@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -120,6 +121,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         ACache.get(AppApplication.getApplication()).put(USER_NAME, txtMobi.getText().toString());
         ACache.get(AppApplication.getApplication()).put(PASS_WORD, txtPassword.getText().toString());
         ACache.get(AppApplication.getApplication()).put(TOKEN, baseBean.getAccess_token());
+        Log.d("ReToken",ACache.get(AppApplication.getApplication()).getAsString(TOKEN));
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -138,7 +140,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             ToastUtil.toast("请输入密码");
             return;
         }
-        ACache.get(AppApplication.getApplication()).put(TOKEN, "");
+        ACache.get(AppApplication.getApplication()).remove(TOKEN);
         mPresenter.login(username, password);
     }
 
@@ -150,7 +152,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void showError(String msg) {
         btnLogin.showButtonText();
-        ToastUtil.toast("登录失败：账户或密码错误");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     @Override

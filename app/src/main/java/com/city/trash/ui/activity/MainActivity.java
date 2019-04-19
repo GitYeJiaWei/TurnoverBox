@@ -273,7 +273,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("获取押金失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     /**

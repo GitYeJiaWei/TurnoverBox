@@ -1,5 +1,6 @@
 package com.city.trash.ui.activity;
 
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FindBean;
+import com.city.trash.common.util.DateUtil;
 import com.city.trash.common.util.SoundManage;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -99,7 +101,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     @Override
@@ -115,6 +117,9 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
     }
 
     private void readTag() {
+        if (DateUtil.isFastClick()){
+            return;
+        }
         //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = AppApplication.mReader.readData("00000000",
@@ -123,9 +128,14 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
                 Integer.parseInt("4"));
 
         if (entity!=null){
-            SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
             String epc = entity.getId().substring(4);
-            mPresenter.find(epc);
+            if (!TextUtils.isEmpty(epc)){
+                SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
+                mPresenter.find(epc);
+            }else {
+                SoundManage.PlaySound(this, SoundManage.SoundType.FAILURE);
+                ToastUtil.toast("周转箱编号扫描失败,请将PDA感应模块贴近卡片重新扫描");
+            }
         }else {
             SoundManage.PlaySound(this, SoundManage.SoundType.FAILURE);
             ToastUtil.toast("周转箱编号扫描失败,请将PDA感应模块贴近卡片重新扫描");

@@ -219,7 +219,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("报废登记失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 
     @OnClick({R.id.btn_scan, R.id.btn_lease})

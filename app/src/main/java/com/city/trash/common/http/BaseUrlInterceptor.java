@@ -1,6 +1,7 @@
 package com.city.trash.common.http;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.city.trash.AppApplication;
 import com.city.trash.common.util.ACache;
@@ -58,6 +59,9 @@ public class BaseUrlInterceptor implements Interceptor {
                 .build();
         //获取处理后的新newRequest
         Request newRequest = builder.url(newHttpUrl).build();
+        Log.d("ReToken","url："+newHttpUrl);
+        Log.d("ReToken","Content-Type："+"application/x-www-form-urlencoded; charset=utf-8");
+        Log.d("ReToken","Authorization："+"Bearer " + token);
         return chain.proceed(newRequest);
     }
 }

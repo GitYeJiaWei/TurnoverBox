@@ -74,6 +74,6 @@ public class UserActivity extends BaseActivity<SettingPresenter> implements Sett
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("修改密码失败");
+        ToastUtil.toast("操作失败,请退出重新登录");
     }
 }
