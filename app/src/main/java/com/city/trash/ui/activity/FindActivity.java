@@ -76,7 +76,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
     @Override
     public void findResult(BaseBean<FindBean> baseBean) {
         if (baseBean == null) {
-            ToastUtil.toast("");
+            ToastUtil.toast("扫码失败");
             return;
         }
         if (baseBean.getCode() == 0) {

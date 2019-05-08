@@ -43,6 +43,8 @@
                 -->
             </intent-filter>
         </activity>
+        <service android:name=".common.download.LoadingService"
+            android:process="system"/><!--注册系统级别的服务 这样退出app可以继续下载-->
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -110,7 +112,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.PowerActivity"></activity>
+        <activity android:name=".ui.activity.PowerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

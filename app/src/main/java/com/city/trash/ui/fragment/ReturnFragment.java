@@ -1,30 +1,17 @@
 package com.city.trash.ui.fragment;
 
 import android.content.Intent;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.city.trash.AppApplication;
 import com.city.trash.R;
-import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.EPC;
-import com.city.trash.bean.LeaseBean;
 import com.city.trash.common.util.ACache;
-import com.city.trash.common.util.DateUtil;
-import com.city.trash.common.util.SoundManage;
-import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
-import com.city.trash.di.component.DaggerLeaseComponent;
-import com.city.trash.di.module.LeaseidModule;
-import com.city.trash.presenter.LeaseidPresenter;
-import com.city.trash.presenter.contract.LeaseidContract;
 import com.city.trash.ui.activity.ReturnActivity;
 import com.city.trash.ui.adapter.InitListAdapter;
-import com.rscja.deviceapi.RFIDWithUHF;
-import com.rscja.deviceapi.entity.SimpleRFIDEntity;
 
 import java.util.ArrayList;
 
@@ -34,10 +21,9 @@ import butterknife.OnClick;
 /**
  * 退还
  */
-public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements LeaseidContract.LeaseidView {
+public class ReturnFragment extends BaseFragment{
     @BindView(R.id.btn_lease)
     Button btnLease;
-    String cardCode;
     @BindView(R.id.list_lease)
     ListView listLease;
     private InitListAdapter initListAdapter;
@@ -53,8 +39,6 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
 
     @Override
     public void setupAcitivtyComponent(AppComponent appComponent) {
-        DaggerLeaseComponent.builder().appComponent(appComponent).leaseidModule(new LeaseidModule(this))
-                .build().inject(this);
     }
 
     @Override
@@ -74,64 +58,9 @@ public class ReturnFragment extends BaseFragment<LeaseidPresenter> implements Le
 
     }
 
-    @Override
-    public void myOnKeyDwon()
-    {
-        readTag();
-    }
-
-
-    private void readTag() {
-        if (DateUtil.isFastClick()){
-            return;
-        }
-        //AppApplication.mReader.setPower(10);
-        SimpleRFIDEntity entity;
-        entity = AppApplication.mReader.readData("00000000",
-                RFIDWithUHF.BankEnum.valueOf("TID"),
-                Integer.parseInt("0"),
-                Integer.parseInt("6"));
-        if (entity != null) {
-            cardCode = entity.getData();
-            if (!TextUtils.isEmpty(cardCode)){
-                SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
-                mPresenter.leaseid(cardCode,"2");
-            }else {
-                SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
-                ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
-            }
-        }else {
-            SoundManage.PlaySound(mActivity, SoundManage.SoundType.FAILURE);
-            ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
-        }
-    }
-
     @OnClick(R.id.btn_lease)
     public void onViewClicked() {
-        readTag();
-    }
-
-    @Override
-    public void leaseidResult(BaseBean<LeaseBean> baseBean) {
-        Log.d("ReToken",ACache.get(AppApplication.getApplication()).getAsString("token"));
-
-        if (baseBean==null){
-            ToastUtil.toast("扫描退还卡失败");
-            return;
-        }
-        if (baseBean.getCode()==0){
-            ToastUtil.toast("扫描退还卡成功");
-            Intent intent = new Intent(AppApplication.getApplication(), ReturnActivity.class);
-            intent.putExtra("TID",cardCode);
-            intent.putExtra("cardCode",baseBean.getData());
-            startActivity(intent);
-        }else {
-            ToastUtil.toast(baseBean.getMessage());
-        }
-    }
-
-    @Override
-    public void showError(String msg) {
-        ToastUtil.toast("操作失败,请退出重新登录");
+        Intent intent = new Intent(AppApplication.getApplication(), ReturnActivity.class);
+        startActivity(intent);
     }
 }

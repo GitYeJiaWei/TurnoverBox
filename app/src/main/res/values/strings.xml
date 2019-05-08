@@ -48,6 +48,8 @@
     <string name="setting_user_pass2">密码确认：</string>
     <string name="lease_num">租赁卡编号：</string>
     <string name="lease_name">租赁人姓名：</string>
+    <string name="frag_scan">点击进行租赁</string>
+    <string name="frag_back">点击进行退还</string>
     <string name="lease_next">扫描货物</string>
     <string name="lease_scan">扫描租赁卡</string>
     <string name="lease_back">扫描退还卡</string>

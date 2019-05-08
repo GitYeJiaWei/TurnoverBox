@@ -21,12 +21,12 @@ public class RuleListPresenter extends BasePresenter<RuleListContract.IFeeRuleMo
         super(iFeeRuleModel, feeRuleView);
     }
 
-    public void feeRule(){
+    public void feeRule(int deviceType){
         if (!NetUtils.isConnected(mContext)){
             ToastUtil.toast(R.string.error_network_unreachable);
             return;
         }
-        mModel.feeRule()
+        mModel.feeRule(deviceType)
                 .subscribeOn(Schedulers.io())//访问数据在子线程
                 .observeOn(AndroidSchedulers.mainThread())//拿到数据在主线程
                 .subscribe(new ProgressSubcriber<BaseBean<FeeRule>>(mContext,mView) {

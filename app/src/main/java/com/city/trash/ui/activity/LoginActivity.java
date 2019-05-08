@@ -152,7 +152,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void showError(String msg) {
         btnLogin.showButtonText();
-        ToastUtil.toast("操作失败,请退出重新登录");
+        ToastUtil.toast("账户或密码不正确");
     }
 
     @Override

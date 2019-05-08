@@ -19,8 +19,9 @@ public class FeeRuleModel implements RuleListContract.IFeeRuleModel {
     }
 
     @Override
-    public Observable<BaseBean<FeeRule>> feeRule() {
+    public Observable<BaseBean<FeeRule>> feeRule(int deviceType) {
         Map<String,String> map = new HashMap<>();
+        map.put("deviceType",deviceType+"");
         return mApiService.rulelist(map);
     }
 }

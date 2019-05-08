@@ -25,8 +25,8 @@ public class FindBean extends BaseEntity {
     private String CustomerName;
     private String CustomerMobile;
     private int RentDays;
-    private int Deposit;
-    private int Fee;
+    private double Deposit;
+    private double Fee;
     private int OvertimeDays;
     private double OvertimeFee;
 
@@ -94,20 +94,20 @@ public class FindBean extends BaseEntity {
         this.RentDays = RentDays;
     }
 
-    public int getDeposit() {
+    public double getDeposit() {
         return Deposit;
     }
 
-    public void setDeposit(int Deposit) {
-        this.Deposit = Deposit;
+    public void setDeposit(double deposit) {
+        Deposit = deposit;
     }
 
-    public int getFee() {
+    public double getFee() {
         return Fee;
     }
 
-    public void setFee(int Fee) {
-        this.Fee = Fee;
+    public void setFee(double fee) {
+        Fee = fee;
     }
 
     public int getOvertimeDays() {

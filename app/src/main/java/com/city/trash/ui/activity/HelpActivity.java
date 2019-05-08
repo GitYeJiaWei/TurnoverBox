@@ -43,9 +43,9 @@ public class HelpActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
+        switch (requestCode) {
             case 0:
-                if (PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
+                if (PrintService.pl.getState() == PrinterClass.STATE_CONNECTED) {
                     HelpActivity.this.finish();
                 }
                 break;

@@ -4,10 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <Button
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/md_blue_500"
+        android:textColor="@color/white"
+        android:text="租赁历史详情"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="1dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@color/md_blue_500"
@@ -71,17 +81,17 @@
         android:layout_marginRight="5dp"
         android:layout_width="match_parent"
         android:layout_marginBottom="15dp"
-        android:layout_height="380dp">
+        android:layout_height="350dp">
 
     </ListView>
 
     <Button
         android:id="@+id/btn_lease"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/md_blue_500"
         android:textColor="@color/white"
-        android:text="@string/lease_scan"/>
+        android:text="@string/frag_scan"/>
 
 </LinearLayout>

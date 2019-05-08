@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 public interface RuleListContract {
     //Model的接口,数据请求
     interface IFeeRuleModel{
-        Observable<BaseBean<FeeRule>> feeRule();
+        Observable<BaseBean<FeeRule>> feeRule(int deviceType);
     }
 
     //View的接口，表明View要做的事情

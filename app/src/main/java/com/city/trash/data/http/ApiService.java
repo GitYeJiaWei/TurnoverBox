@@ -35,11 +35,11 @@ public interface ApiService {
     @POST("/api/User/ChangePassword")
     Observable<BaseBean<String>> setting(@FieldMap Map<String,String> params);
 
-    //获取租赁客户信息
+    //根据卡号获取客户信息
     @GET("/api/Customer/GetCustomer")
     Observable<BaseBean<LeaseBean>> leaseid(@QueryMap Map<String,String> params);
 
-    //获取押金规则
+    //设备登陆后获取系统相关数据
     @GET("/api/User/GetLoginData")
     Observable<BaseBean<FeeRule>> rulelist(@QueryMap Map<String,String> params);
 

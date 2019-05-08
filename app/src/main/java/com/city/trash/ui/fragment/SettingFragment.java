@@ -1,24 +1,18 @@
 package com.city.trash.ui.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.city.trash.R;
 import com.city.trash.di.component.AppComponent;
 import com.city.trash.ui.activity.BleActivity;
-import com.city.trash.ui.activity.HelpActivity;
 import com.city.trash.ui.activity.InformActivity;
 import com.city.trash.ui.activity.PowerActivity;
 import com.city.trash.ui.activity.UserActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 设置

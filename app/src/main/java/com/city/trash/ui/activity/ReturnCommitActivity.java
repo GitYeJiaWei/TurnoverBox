@@ -185,7 +185,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
 
     private void print(){
         if (PrintService.pl == null || PrintService.pl.getState() != PrinterClass.STATE_CONNECTED) {
-            ToastUtil.toast("请先到设置中连接打印机");
+            ToastUtil.toast("请先连接蓝牙打印机");
             startActivity(new Intent(this,BleActivity.class));
             return;
         }
@@ -239,7 +239,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         //点击对话框以外的区域是否让对话框消失
         builder.setCancelable(true);
         //设置正面按钮
-        builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 print();
@@ -247,7 +247,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             }
         });
         //设置反面按钮
-        builder.setNegativeButton("不是", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
