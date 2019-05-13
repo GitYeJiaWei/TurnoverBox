@@ -337,11 +337,4 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
         readTag(a);
         super.onDestroy();
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

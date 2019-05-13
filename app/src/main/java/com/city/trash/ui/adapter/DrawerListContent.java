@@ -20,9 +20,9 @@ public class DrawerListContent {
     public static Map<String, DrawerItem> ITEM_MAP = new HashMap<>();
 
     static {
-        addItem(new DrawerItem("1", "操作人员", R.mipmap.ic_launcher));
-        addItem(new DrawerItem("2", "VIP", R.mipmap.ic_launcher));
-        addItem(new DrawerItem("3", "退出登陆", R.mipmap.ic_launcher));
+        addItem(new DrawerItem("1", "操作人员", R.mipmap.size));
+        addItem(new DrawerItem("2", "VIP", R.mipmap.size));
+        addItem(new DrawerItem("3", "退出登陆", R.mipmap.size));
         }
 
     /**

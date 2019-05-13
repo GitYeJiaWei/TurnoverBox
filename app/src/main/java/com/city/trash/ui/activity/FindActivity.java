@@ -127,7 +127,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
                 Integer.parseInt("0"),
                 Integer.parseInt("4"));
 
-        if (entity!=null){
+        if (entity!=null && entity.getId().length()>4){
             String epc = entity.getId().substring(4);
             if (!TextUtils.isEmpty(epc)){
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
