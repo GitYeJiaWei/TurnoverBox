@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 
 public class CreateReturnModel implements CreateReturnContract.ICreateReturnModel {
     @Override
-    public Observable<BaseBean<String>> createReturn(String customerId,String damageFee,String listEpcJson) {
+    public Observable<BaseBean<Object>> createReturn(String customerId,String damageFee,String listEpcJson) {
         Map<String,String> map = new HashMap<>();
         map.put("customerId",customerId);
         map.put("damageFee",damageFee);

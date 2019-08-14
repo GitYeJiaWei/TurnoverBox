@@ -55,13 +55,13 @@ public class AppApplication extends Application
         mGson = mAppComponent.getGson();
         mThreadPool = mAppComponent.getExecutorService();
 
-        initUHF();
     }
 
-    private int cycleCount = 3;//循环3次初始化
+    private static int cycleCount = 3;//循环3次初始化
     //初始化RFID扫描
-    public void initUHF()
+    public static void initUHF()
     {
+        cycleCount = 3;
         try
         {
             mReader = RFIDWithUHF.getInstance();

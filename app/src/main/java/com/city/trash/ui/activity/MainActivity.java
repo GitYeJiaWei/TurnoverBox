@@ -122,6 +122,9 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         if (TextUtils.isEmpty(key1)) {
             key1 = "10";
         }
+        if (AppApplication.mReader == null){
+            AppApplication.initUHF();
+        }
         AppApplication.mReader.setPower(Integer.valueOf(key1));
     }
 
@@ -309,11 +312,6 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         }
     }
 
-    @Override
-    public void showError(String msg) {
-        ToastUtil.toast("操作失败,请退出重新登录");
-    }
-
     /**
      * The click listener for ListView in the navigation drawer
      * 点击左侧抽屉的item
@@ -387,7 +385,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                 ((BaseFragment) fragment).myOnKeyDwon();
             }
         } else if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            exit();
+            //exit();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -474,6 +472,9 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         }
     }
 
+    /**
+     * 跟新版本的信息的Dialog
+     */
     private void showDialog() {
         final Dialog dialog = new Dialog(MainActivity.this);
         LayoutInflater inflater = (LayoutInflater) MainActivity.this

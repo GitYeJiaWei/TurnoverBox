@@ -47,7 +47,6 @@ public class PrintSettingActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_setting);
 
-//		�����Ͽ�ģʽ
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 

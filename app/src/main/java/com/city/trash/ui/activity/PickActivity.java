@@ -171,6 +171,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
                 AppApplication.mReader.stopInventory();
                 loopFlag = false;
                 a = 1;
+                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {

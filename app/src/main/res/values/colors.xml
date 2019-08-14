@@ -317,4 +317,7 @@
     <!-- 确定/取消按键字体颜色 -->
     <color name="dialog_btn_content">#333333</color>
     <color name="permissionBgColorBlue">#3a8dde</color>
+
+    <color name="back_base">#e1e1e1</color>
+    <color name="back_text">#8b8b8b</color>
 </resources>

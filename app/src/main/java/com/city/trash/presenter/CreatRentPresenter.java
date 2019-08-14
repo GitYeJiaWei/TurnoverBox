@@ -19,17 +19,17 @@ public class CreatRentPresenter extends BasePresenter<CreateRentContract.ICreate
         super(iCreateRentModel, createRentView);
     }
 
-    public void creatrent(String ListEpcJson,String CustomerId){
+    public void creatrent(String ListEpcJson,String CustomerId,double ReplenishmentAmount){
         if (!NetUtils.isConnected(mContext)){
             ToastUtil.toast(R.string.error_network_unreachable);
             return;
         }
-        mModel.createRent(ListEpcJson,CustomerId)
+        mModel.createRent(ListEpcJson,CustomerId,ReplenishmentAmount)
                 .subscribeOn(Schedulers.io())//访问数据在子线程
                 .observeOn(AndroidSchedulers.mainThread())//拿到数据在主线程
-                .subscribe(new ProgressSubcriber<BaseBean<String>>(mContext,mView) {
+                .subscribe(new ProgressSubcriber<BaseBean<Object>>(mContext,mView) {
                     @Override
-                    public void onNext(BaseBean<String> baseBean) {
+                    public void onNext(BaseBean<Object> baseBean) {
                         //当Observable发生事件的时候触发
                         mView.createRentResult(baseBean);
                     }

@@ -24,11 +24,13 @@ public class BaseUrlInterceptor implements Interceptor {
         String host = ACache.get(AppApplication.getApplication()).getAsString("host");
         String token = ACache.get(AppApplication.getApplication()).getAsString("token");
         if (ip == null) {
-            ip = "39.100.19.127";
+            ip = "192.168.66.3";//测试
+            //ip = "39.100.19.127";//正式
             //ip = "mall.ioter-e.com";
         }
         if (host == null){
-            host = "8081";
+            host = "8112";//测试
+            //host = "8081";//正式
         }
 
         //获取原始的originalRequest

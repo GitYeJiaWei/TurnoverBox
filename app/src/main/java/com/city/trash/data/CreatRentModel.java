@@ -11,10 +11,11 @@ import io.reactivex.Observable;
 
 public class CreatRentModel implements CreateRentContract.ICreateRentModel{
     @Override
-    public Observable<BaseBean<String>> createRent(String ListEpcJson, String CustomerId) {
-        Map<String,String> map = new HashMap<>();
+    public Observable<BaseBean<Object>> createRent(String ListEpcJson, String CustomerId,double ReplenishmentAmount) {
+        Map<String,Object> map = new HashMap<>();
         map.put("ListEpcJson",ListEpcJson);
         map.put("CustomerId",CustomerId);
+        map.put("ReplenishmentAmount",ReplenishmentAmount);
         return mApiService.createRent(map);
     }
 

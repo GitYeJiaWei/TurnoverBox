@@ -149,11 +149,12 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public void returnResult(BaseBean<List<ReturnBean>> baseBean) {
+        btnCommit.setEnabled(true);
         if (baseBean == null) {
             ToastUtil.toast("获取费用小计失败");
             return;
         }
-        if (baseBean.getCode() == 0 && baseBean.getData().size() > 0) {
+        if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
             if (a == 2) {
                 readTag(a);
             }
@@ -173,7 +174,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("操作失败,请退出重新登录");
+        btnCommit.setEnabled(false);
     }
 
     @Override
@@ -211,6 +212,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                 AppApplication.mReader.stopInventory();
                 loopFlag = false;
                 a = 1;
+                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {
@@ -237,6 +239,8 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                     ToastUtil.toast("请扫描退还卡再提交");
                     return;
                 }
+
+                btnCommit.setEnabled(false);
                 Iterator it = hashMap.keySet().iterator();
                 arrayList.clear();
                 while (it.hasNext()) {
@@ -300,7 +304,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                                                ToastUtil.toast("扫描退还卡失败");
                                                return;
                                            }
-                                           if (baseBean.getCode() == 0) {
+                                           if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
                                                ToastUtil.toast("扫描退还卡成功");
                                                tvName.setText(baseBean.getData().getContactName());
                                                tvTid.setText(cardCode);
@@ -312,7 +316,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
                                        @Override
                                        public void onError(Throwable e) {
-                                           ToastUtil.toast("操作失败,请退出重新登录");
+                                           ToastUtil.toast(e.getMessage());
                                        }
 
                                        @Override

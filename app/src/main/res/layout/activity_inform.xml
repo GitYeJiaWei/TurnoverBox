@@ -48,7 +48,7 @@
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_blue_500"
+        android:background="@drawable/btn_select"
         android:textColor="@color/white"
         android:text="@string/save"/>
 </LinearLayout>

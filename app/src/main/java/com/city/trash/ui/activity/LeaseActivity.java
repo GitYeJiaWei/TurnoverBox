@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.city.trash.bean.BaseEpc;
 import com.city.trash.bean.EPC;
 import com.city.trash.bean.FeeRule;
 import com.city.trash.bean.LeaseBean;
+import com.city.trash.common.ScreenUtils;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.DateUtil;
 import com.city.trash.common.util.SoundManage;
@@ -35,6 +37,7 @@ import com.rscja.deviceapi.RFIDWithUHF;
 import com.rscja.deviceapi.entity.SimpleRFIDEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,12 +81,15 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     TextView tvSum;
     @BindView(R.id.btn_card)
     Button btnCard;
+    @BindView(R.id.et_num)
+    EditText etNum;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
     private HashMap<String, String> map = new HashMap<>();
     private BaseBean<FeeRule> baseBean = null;
     private double sum = 0;
     String leaseResult = null;
+    String Balance;
     String cardCode;
     String Tid;
 
@@ -199,6 +205,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 AppApplication.mReader.stopInventory();
                 loopFlag = false;
                 a = 1;
+                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {
@@ -222,9 +229,13 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 }
                 String name = tvName.getText().toString();
                 String id = tvTid.getText().toString();
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id)){
+                String ReplenishmentAmount = etNum.getText().toString();
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id)) {
                     ToastUtil.toast("请扫描租赁卡再提交");
                     return;
+                }
+                if (TextUtils.isEmpty(ReplenishmentAmount)){
+                    ReplenishmentAmount = "0";
                 }
                 ArrayList<String> arrayList = new ArrayList<>();
                 Iterator it = hashMap.keySet().iterator();
@@ -234,7 +245,9 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                         arrayList.add(hashMap.get(key).get(i).getData1());
                     }
                 }
-                mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), Tid);
+
+                btnCommit.setEnabled(false);
+                mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), Tid,Double.valueOf(ReplenishmentAmount));
                 break;
             case R.id.btn_print:
                 if (a == 2) {
@@ -295,7 +308,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                                                ToastUtil.toast("扫描租赁卡失败");
                                                return;
                                            }
-                                           if (baseBean.getCode() == 0) {
+                                           if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
                                                ToastUtil.toast("扫描租赁卡成功");
                                                tvName.setText(baseBean.getData().getContactName());
                                                tvTid.setText(cardCode);
@@ -307,7 +320,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
                                        @Override
                                        public void onError(Throwable e) {
-                                           ToastUtil.toast("操作失败,请退出重新登录");
+                                           ToastUtil.toast(e.getMessage());
                                        }
 
                                        @Override
@@ -354,6 +367,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                         "--------------------------\n" +
                         "累计租赁（个）：" + map.size() + "\n" +
                         "应付金额（元）：" + sum + "\n" +
+                        "余额（元）："+Balance+ "\n" +
                         "操作员：" + ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME) + "\n" +
                         "打印时间：" + str_time + "\n\n\n";
         try {
@@ -369,49 +383,56 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     }
 
     private void createDialog() {
-        if (TextUtils.isEmpty(leaseResult)) {
-            ToastUtil.toast("请先提交再打印！");
-            return;
+        if (ScreenUtils.Utils.isFastClick()) {
+            // 进行点击事件后的逻辑操作
+            if (TextUtils.isEmpty(leaseResult)) {
+                ToastUtil.toast("请先提交再打印！");
+                return;
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提交成功：");
+            builder.setMessage("是否打印小票?");
+            builder.setIcon(R.mipmap.ic_launcher_round);
+            //点击对话框以外的区域是否让对话框消失
+            builder.setCancelable(true);
+            //设置正面按钮
+            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    print();
+                    dialog.dismiss();
+                }
+            });
+            //设置反面按钮
+            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    startActivity(new Intent(LeaseActivity.this, MainActivity.class));
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            //显示对话框
+            dialog.show();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提交成功：");
-        builder.setMessage("是否打印小票?");
-        builder.setIcon(R.mipmap.ic_launcher_round);
-        //点击对话框以外的区域是否让对话框消失
-        builder.setCancelable(true);
-        //设置正面按钮
-        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                print();
-                dialog.dismiss();
-            }
-        });
-        //设置反面按钮
-        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                startActivity(new Intent(LeaseActivity.this, MainActivity.class));
-                finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        //显示对话框
-        dialog.show();
+
     }
 
     @Override
-    public void createRentResult(BaseBean<String> baseBean) {
+    public void createRentResult(BaseBean<Object> baseBean) {
+        btnCommit.setEnabled(true);
         if (baseBean == null) {
             ToastUtil.toast("出库提交失败");
             return;
         }
-        if (baseBean.getCode() == 0) {
+        if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
             ToastUtil.toast("出库提交成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            leaseResult = baseBean.getData();
+            Map<String,Object> map = (Map<String, Object>) baseBean.getData();
+            leaseResult = map.get("Id").toString();
+            Balance =  map.get("Balance").toString();
             String name = tvName.getText().toString();
             String num = map.size() + "";
 
@@ -437,7 +458,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     public void showError(String msg) {
-        ToastUtil.toast("操作失败,请退出重新登录");
+        btnCommit.setEnabled(false);
     }
 
     @Override

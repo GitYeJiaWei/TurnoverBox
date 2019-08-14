@@ -9,7 +9,7 @@
         android:id="@+id/btn_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_blue_500"
+        android:background="@drawable/btn_select"
         android:textColor="@color/white"
         android:text="@string/lease_scan"/>
 
@@ -54,11 +54,33 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="补缴金额："/>
+
+        <EditText
+            android:id="@+id/et_num"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:text=""
+            />
+    </LinearLayout>
+
     <Button
         android:id="@+id/btn_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/md_blue_500"
+        android:background="@drawable/btn_select"
         android:textColor="@color/white"
         android:text="@string/lease_next"/>
 
@@ -67,7 +89,6 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:orientation="vertical">
 
         <LinearLayout
@@ -118,7 +139,7 @@
             android:id="@+id/list_lease"
             android:layout_width="match_parent"
             android:layout_marginBottom="15dp"
-            android:layout_height="200dp"/>
+            android:layout_height="150dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -152,7 +173,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@color/md_blue_500"
+                android:background="@drawable/btn_select"
                 android:textColor="@color/white"
                 android:text="@string/lease_commit"/>
 
@@ -162,7 +183,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@color/md_blue_500"
+                android:background="@drawable/btn_select"
                 android:textColor="@color/white"
                 android:text="@string/lease_print"/>
         </LinearLayout>

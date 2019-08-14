@@ -46,6 +46,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected Boolean IsFlushList = true; // 是否刷列表
     protected Object beep_Lock = new Object();
+    //蜂鸣器
     protected ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM, ToneGenerator.MAX_VOLUME);
 
 

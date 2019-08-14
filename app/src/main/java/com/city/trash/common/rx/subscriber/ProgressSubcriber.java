@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.city.trash.common.exception.BaseException;
+import com.city.trash.common.util.ToastUtil;
 import com.city.trash.ui.BaseView;
 
 import io.reactivex.disposables.Disposable;
@@ -37,12 +38,14 @@ public  abstract  class ProgressSubcriber<T> extends ErrorHandlerSubscriber<T>  
 
     @Override
     public void onError(Throwable e) {
-        mView.dismissLoading();
         e.printStackTrace();
-        Log.d("ReToken","ERROR："+e.getMessage());
-        //当出现错误时触发
-        BaseException baseException =  mErrorHandler.handleError(e);
-        mView.showError(baseException.getDisplayMessage());
+
+        /*BaseException baseException = mErrorHandler.handleError(e);
+        mView.showError(baseException.getDisplayMessage());*/
+
+        ToastUtil.toast(e.getMessage());
+        mView.showError(e.getMessage());
+        mView.dismissLoading();
 
     }
 

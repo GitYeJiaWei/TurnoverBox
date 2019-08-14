@@ -27,9 +27,9 @@ public class CreateReturnPresenter extends BasePresenter<CreateReturnContract.IC
         mModel.createReturn(customerId,damageFee,listEpcJson)
                 .subscribeOn(Schedulers.io())//访问数据在子线程
                 .observeOn(AndroidSchedulers.mainThread())//拿到数据在主线程
-                .subscribe(new ProgressSubcriber<BaseBean<String>>(mContext,mView) {
+                .subscribe(new ProgressSubcriber<BaseBean<Object>>(mContext,mView) {
                     @Override
-                    public void onNext(BaseBean<String> baseBean) {
+                    public void onNext(BaseBean<Object> baseBean) {
                         //当Observable发生事件的时候触发
                         mView.createReturnResult(baseBean);
                     }

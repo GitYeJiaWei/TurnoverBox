@@ -172,7 +172,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@color/md_blue_500"
+                android:background="@drawable/btn_select"
                 android:textColor="@color/white"
                 android:text="@string/return_commit"/>
 
@@ -182,7 +182,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@color/md_blue_500"
+                android:background="@drawable/btn_select"
                 android:textColor="@color/white"
                 android:text="@string/lease_print"/>
         </LinearLayout>
