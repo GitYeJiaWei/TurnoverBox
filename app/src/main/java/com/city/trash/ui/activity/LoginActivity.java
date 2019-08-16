@@ -124,8 +124,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         Log.d("ReToken",ACache.get(AppApplication.getApplication()).getAsString(TOKEN));
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
-        finish();
-        ToastUtil.toast("登陆成功");
+        //ToastUtil.toast("登陆成功");
     }
 
     @OnClick(R.id.btn_login)
@@ -164,7 +163,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
             //ActivityCollecter.finishAll();
-            return true;
+            return false;
         }
         return super.onKeyDown(keyCode, event);
     }

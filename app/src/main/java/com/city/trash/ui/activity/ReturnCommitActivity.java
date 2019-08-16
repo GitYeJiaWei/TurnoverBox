@@ -235,7 +235,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         }
         PrintService.pl.printText("\n");
         PrintService.pl.write(new byte[]{0x1d, 0x0c});
-        startActivity(new Intent(ReturnCommitActivity.this, MainActivity.class));
+        setResult(RESULT_OK);
         finish();
     }
 
@@ -249,7 +249,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         builder.setMessage("是否打印小票?");
         builder.setIcon(R.mipmap.ic_launcher_round);
         //点击对话框以外的区域是否让对话框消失
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         //设置正面按钮
         builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
@@ -263,7 +263,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                startActivity(new Intent(ReturnCommitActivity.this, MainActivity.class));
+                setResult(RESULT_OK);
                 finish();
             }
         });

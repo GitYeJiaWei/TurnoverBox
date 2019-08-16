@@ -14,6 +14,8 @@ import com.city.trash.di.component.AppComponent;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.city.trash.ui.activity.MainActivity.mReader;
+
 /**
  * 功率设置
  */
@@ -62,7 +64,7 @@ public class PowerActivity extends BaseActivity implements SeekBar.OnSeekBarChan
     public void onViewClicked() {
         String key1 = tvShow1.getText().toString();
         ACache.get(AppApplication.getApplication()).put("key1", key1);
-        AppApplication.mReader.setPower(Integer.valueOf(key1));
+        mReader.setPower(Integer.valueOf(key1));
 
         ToastUtil.toast("保存成功");
         finish();

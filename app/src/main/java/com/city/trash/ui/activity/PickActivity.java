@@ -35,12 +35,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.city.trash.ui.activity.MainActivity.mReader;
+
+
 public class PickActivity extends BaseActivity<CreateDamagePresenter> implements CreateDamageContract.CreateDamageView {
 
     @BindView(R.id.btn_lease)
     Button btnLease;
-    String cardCode;
-    int a = 1;
     @BindView(R.id.btn_scan)
     Button btnScan;
     @BindView(R.id.tv_pick)
@@ -51,8 +52,8 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     LinearLayout linLease;
     LeaseScanadapter leaseScanadapter;
     private ArrayList<EPC> epclist = new ArrayList<>();
-    private HashMap<String,String> map = new HashMap<>();
-    private ConcurrentHashMap<String,List<EPC>> hashMap = new ConcurrentHashMap<>();
+    private HashMap<String, String> map = new HashMap<>();
+    private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
     @BindView(R.id.list_lease)
     ListView listLease;
     private InitListAdapter initListAdapter;
@@ -79,17 +80,17 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
         leaseScanadapter = new LeaseScanadapter(this, "pick");
         tvPick.setAdapter(leaseScanadapter);
 
-        initListAdapter = new InitListAdapter(this,"pickResult");
+        initListAdapter = new InitListAdapter(this, "pickResult");
         listLease.setAdapter(initListAdapter);
 
         ACache aCache = ACache.get(AppApplication.getApplication());
         ArrayList<EPC> leaseResultlist = (ArrayList<EPC>) aCache.getAsObject("pickResult");
-        if (leaseResultlist!=null){
+        if (leaseResultlist != null) {
             initListAdapter.updateDatas(leaseResultlist);
         }
 
-        baseBean = (BaseBean<FeeRule>)ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
-        if (baseBean==null){
+        baseBean = (BaseBean<FeeRule>) ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
+        if (baseBean == null) {
             return;
         }
     }
@@ -106,10 +107,10 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
         for (int i = 0; i < baseBean.getData().getFeeRules().size(); i++) {
             type = baseBean.getData().getFeeRules().get(i).getProductTypeId();
             name = baseBean.getData().getFeeRules().get(i).getProductTypeName();
-            if (baseEpc._EPC.length()<=type.length()+1){
+            if (baseEpc._EPC.length() <= type.length() + 1) {
                 return;
             }
-            if (type.equals(baseEpc._EPC.substring(0,type.length()))){
+            if (type.equals(baseEpc._EPC.substring(0, type.length()))) {
                 EPC epc = new EPC();
                 epc.setData1(baseEpc._EPC);
                 if (!hashMap.containsKey(name)) {
@@ -130,18 +131,18 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
                     epclist.add(epc1);
                 }
                 map.put(baseEpc._EPC, null);
-                tvNum.setText(map.size()+"个");
+                tvNum.setText(map.size() + "个");
                 leaseScanadapter.updateDatas(epclist);
             }
         }
     }
 
 
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 1;
-                readTag(a);
+                readTag("扫描货物");
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -151,34 +152,29 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 2;
-                readTag(a);
+                readTag("停止扫描");
             }
         }
         return super.onKeyUp(keyCode, event);
     }
 
-    private void readTag(int scan) {
+    private void readTag(String state) {
         linLease.setVisibility(View.VISIBLE);
-        if (scan == 1) {
-            if (AppApplication.mReader.startInventoryTag((byte) 0, (byte) 0)) {
+        if (state.equals("扫描货物")) {
+            if (mReader.startInventoryTag((byte) 0, (byte) 0)) {
                 btnScan.setText("停止扫描");
                 loopFlag = true;
-                a = 2;
                 new TagThread(10).start();
             } else {
                 btnScan.setText("扫描货物");
-                AppApplication.mReader.stopInventory();
+                mReader.stopInventory();
                 loopFlag = false;
-                a = 1;
-                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {
             btnScan.setText("扫描货物");
-            AppApplication.mReader.stopInventory();
+            mReader.stopInventory();
             loopFlag = false;
-            a = 1;
         }
     }
 
@@ -194,10 +190,10 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
             ACache aCache = ACache.get(AppApplication.getApplication());
             String leaseResult = baseBean.getData();
             long time = System.currentTimeMillis();
-            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date d1=new Date(time);
-            String t1=format.format(d1);
-            String num = map.size()+"";
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date d1 = new Date(time);
+            String t1 = format.format(d1);
+            String num = map.size() + "";
 
             EPC epc = new EPC();
             epc.setData1(leaseResult);
@@ -207,12 +203,12 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
 
             //使用getAsObject()，直接进行强转
             ArrayList<EPC> leaseResultlist = (ArrayList<EPC>) aCache.getAsObject("pickResult");
-            if (leaseResultlist==null){
+            if (leaseResultlist == null) {
                 leaseResultlist = new ArrayList<>();
             }
             leaseResultlist.add(epc);
-            aCache.put("pickResult",leaseResultlist,ACache.TIME_DAY);
-            startActivity(new Intent(this,MainActivity.class));
+            aCache.put("pickResult", leaseResultlist, ACache.TIME_DAY);
+            startActivity(new Intent(this, MainActivity.class));
         } else {
             ToastUtil.toast(baseBean.getMessage());
         }
@@ -227,11 +223,15 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scan:
-                readTag(a);
+                if (btnScan.getText().toString().equals("扫描货物")){
+                    readTag("扫描货物");
+                }else {
+                    readTag("停止扫描");
+                }
                 break;
             case R.id.btn_lease:
-                if (a==2){
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 ArrayList<String> arrayList = new ArrayList<>();
                 Iterator it = hashMap.keySet().iterator();
@@ -248,8 +248,9 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
 
     @Override
     protected void onDestroy() {
-        a=2;
-        readTag(a);
+        if (btnScan.getText().toString().equals("停止扫描")){
+            readTag("停止扫描");
+        }
         super.onDestroy();
     }
 }

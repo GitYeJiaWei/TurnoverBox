@@ -39,7 +39,6 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FeeRule;
-import com.city.trash.common.ActivityCollecter;
 import com.city.trash.common.download.LoadingService;
 import com.city.trash.common.download.Utils;
 import com.city.trash.common.util.ACache;
@@ -60,6 +59,7 @@ import com.city.trash.ui.fragment.ReturnFragment;
 import com.city.trash.ui.fragment.SettingFragment;
 import com.qs.helper.printer.PrintService;
 import com.qs.helper.printer.PrinterClass;
+import com.rscja.deviceapi.RFIDWithUHF;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     private boolean isLoading;
     private MyReceive myReceive;
     private String path;
+    public static RFIDWithUHF mReader; //RFID扫描
 
     @Override
     public int setLayout() {
@@ -122,10 +123,50 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         if (TextUtils.isEmpty(key1)) {
             key1 = "10";
         }
-        if (AppApplication.mReader == null){
-            AppApplication.initUHF();
+
+        initUHF();
+        mReader.setPower(Integer.valueOf(key1));
+    }
+
+    //初始化RFID扫描
+    private int cycleCount = 3;//循环3次初始化
+    //初始化RFID扫描
+    public void initUHF()
+    {
+        cycleCount = 3;
+        try
+        {
+            mReader = RFIDWithUHF.getInstance();
+        } catch (Exception ex)
+        {
+            ToastUtil.toast(ex.getMessage());
+            return;
         }
-        AppApplication.mReader.setPower(Integer.valueOf(key1));
+
+        if (mReader != null)
+        {
+            AppApplication.getExecutorService().execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mReader.init())
+                    {
+                        ToastUtil.toast("init uhf fail,reset ...");
+                        if(cycleCount > 0)
+                        {
+                            cycleCount--;
+                            if (mReader != null)
+                            {
+                                mReader.free();
+                            }
+                            initUHF();
+                        }
+                    }else
+                    {
+                        ToastUtil.toast("init uhf success");
+                    }
+                }
+            });
+        }
     }
 
     //网络检测
@@ -249,7 +290,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                 vpager.setCurrentItem(1);
             }
         } else if (strValue.equals("退出")) {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
         } else if (strValue.equals("报废登记")) {
             startActivity(new Intent(MainActivity.this, PickActivity.class));
         } else if (strValue.equals("扫码查询")) {
@@ -322,7 +363,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             mDrawerLayout.closeDrawer(mleftLin);
             if (position == 0)//headView click
             {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                startActivity(new Intent(MainActivity.this, UserActivity.class));
             } else {
                 if (!NetUtils.isConnected(MainActivity.this)) {
                     ToastUtil.toast(R.string.error_network_unreachable);
@@ -342,7 +383,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                 fragment = HomeFragment.newInstance();
                 break;
             case 3:
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
                 return;
         }
         if (fragment == null) {
@@ -385,7 +426,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                 ((BaseFragment) fragment).myOnKeyDwon();
             }
         } else if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            //exit();
+            exit();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -407,11 +448,19 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
         } else {
-            if (PrintService.pl != null && PrintService.pl.getState() == PrinterClass.STATE_CONNECTED) {
-                //断开打印连接
-                PrintService.pl.disconnect();
-            }
-            ActivityCollecter.finishAll();
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (PrintService.pl != null && PrintService.pl.getState() == PrinterClass.STATE_CONNECTED) {
+            //断开打印连接
+            PrintService.pl.disconnect();
+        }
+        if (mReader != null) {
+            mReader.free();
         }
     }
 

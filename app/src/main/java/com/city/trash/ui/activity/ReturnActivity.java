@@ -1,7 +1,6 @@
 package com.city.trash.ui.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,7 +39,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -51,6 +49,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.city.trash.ui.activity.MainActivity.mReader;
 
 public class ReturnActivity extends BaseActivity<ReturnPresenter> implements ReturnContract.ReturnView {
 
@@ -66,7 +66,6 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     Button btnCommit;
     @BindView(R.id.lin_lease)
     LinearLayout linLease;
-    int a = 1;
     @BindView(R.id.btn_card)
     Button btnCard;
     private ArrayList<EPC> epclist = new ArrayList<>();
@@ -154,9 +153,9 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             ToastUtil.toast("获取费用小计失败");
             return;
         }
-        if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
-            if (a == 2) {
-                readTag(a);
+        if (baseBean.getCode() == 0 && baseBean.getData() != null) {
+            if (btnScan.getText().toString().equals("停止扫描")){
+                readTag("停止扫描");
             }
             String TID = tvTid.getText().toString();
             String Name = tvName.getText().toString();
@@ -166,7 +165,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             intent.putExtra("Name", Name);
             intent.putExtra("ID", Tid);
             intent.putExtra("listEpcJson", AppApplication.getGson().toJson(arrayList));
-            startActivity(intent);
+            startActivityForResult(intent,1);
         } else {
             ToastUtil.toast(baseBean.getMessage());
         }
@@ -181,8 +180,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 1;
-                readTag(a);
+                readTag("扫描货物");
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -192,50 +190,49 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 2;
-                readTag(a);
+                readTag("停止扫描");
             }
         }
         return super.onKeyUp(keyCode, event);
     }
 
-    private void readTag(int scan) {
+    private void readTag(String state) {
         linLease.setVisibility(View.VISIBLE);
-        if (scan == 1) {
-            if (AppApplication.mReader.startInventoryTag((byte) 0, (byte) 0)) {
+        if (state.equals("扫描货物")) {
+            if (mReader.startInventoryTag((byte) 0, (byte) 0)) {
                 btnScan.setText("停止扫描");
                 loopFlag = true;
-                a = 2;
                 new TagThread(10).start();
             } else {
                 btnScan.setText("扫描货物");
-                AppApplication.mReader.stopInventory();
+                mReader.stopInventory();
                 loopFlag = false;
-                a = 1;
-                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {
             btnScan.setText("扫描货物");
-            AppApplication.mReader.stopInventory();
+            mReader.stopInventory();
             loopFlag = false;
-            a = 1;
         }
     }
 
-    @OnClick({R.id.btn_scan, R.id.btn_commit,R.id.btn_card})
+    @OnClick({R.id.btn_scan, R.id.btn_commit, R.id.btn_card})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scan:
-                readTag(a);
+                if (btnScan.getText().toString().equals("扫描货物")){
+                    readTag("扫描货物");
+                }else {
+                    readTag("停止扫描");
+                }
                 break;
             case R.id.btn_commit:
-                if (a == 2) {
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 String name = tvName.getText().toString();
                 String id = tvTid.getText().toString();
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id)){
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id)) {
                     ToastUtil.toast("请扫描退还卡再提交");
                     return;
                 }
@@ -252,8 +249,8 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                 mPresenter.Return(AppApplication.getGson().toJson(arrayList)); //获取超时数量
                 break;
             case R.id.btn_card:
-                if (a == 2) {
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 readCard();
                 break;
@@ -261,18 +258,18 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     }
 
     private void readCard() {
-        if (DateUtil.isFastClick()){
+        if (DateUtil.isFastClick()) {
             return;
         }
         //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
-        entity = AppApplication.mReader.readData("00000000",
+        entity = mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("TID"),
                 Integer.parseInt("0"),
                 Integer.parseInt("6"));
         if (entity != null) {
             cardCode = entity.getData();
-            if (!TextUtils.isEmpty(cardCode)){
+            if (!TextUtils.isEmpty(cardCode)) {
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
 
                 Map<String, String> map = new HashMap<>();
@@ -304,7 +301,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                                                ToastUtil.toast("扫描退还卡失败");
                                                return;
                                            }
-                                           if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
+                                           if (baseBean.getCode() == 0 && baseBean.getData() != null) {
                                                ToastUtil.toast("扫描退还卡成功");
                                                tvName.setText(baseBean.getData().getContactName());
                                                tvTid.setText(cardCode);
@@ -325,20 +322,33 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
                                    }
 
                         );
-            }else {
+            } else {
                 SoundManage.PlaySound(this, SoundManage.SoundType.FAILURE);
                 ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
             }
-        }else {
+        } else {
             SoundManage.PlaySound(this, SoundManage.SoundType.FAILURE);
             ToastUtil.toast("退还卡扫描失败,请将PDA感应模块贴近卡片重新扫描");
         }
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1:
+                if (resultCode==RESULT_OK){
+                    setResult(RESULT_OK);
+                    finish();
+                }
+        }
+    }
+
+    @Override
     protected void onDestroy() {
-        a = 2;
-        readTag(a);
+        if (btnScan.getText().toString().equals("停止扫描")){
+            readTag("停止扫描");
+        }
         super.onDestroy();
     }
 }

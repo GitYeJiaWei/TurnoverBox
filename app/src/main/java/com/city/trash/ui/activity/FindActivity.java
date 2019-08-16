@@ -25,6 +25,8 @@ import com.rscja.deviceapi.entity.SimpleRFIDEntity;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.city.trash.ui.activity.MainActivity.mReader;
+
 public class FindActivity extends BaseActivity<FindPresenter> implements FindContract.FindView {
 
     @BindView(R.id.btn_scan)
@@ -122,7 +124,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         }
         //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
-        entity = AppApplication.mReader.readData("00000000",
+        entity = mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("UII"),
                 Integer.parseInt("0"),
                 Integer.parseInt("4"));

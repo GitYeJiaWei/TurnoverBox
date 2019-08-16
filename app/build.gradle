@@ -55,4 +55,5 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation files('libs/qsprintersdk.jar')
+    implementation files('libs/cw-deviceapi20190214.jar')
 }

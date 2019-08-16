@@ -32,6 +32,8 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.city.trash.ui.activity.MainActivity.mReader;
+
 
 public abstract class BaseActivity<T extends BasePresenter> extends AppCompatActivity implements BaseView
 {
@@ -188,7 +190,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             String[] res = null;
             while (loopFlag) {
 
-                res = AppApplication.mReader.readTagFromBuffer();//.readTagFormBuffer();
+                res = mReader.readTagFromBuffer();//.readTagFormBuffer();
 
                 if (res != null) {
 
@@ -200,7 +202,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
                     }
                     Message msg = handler.obtainMessage();
                     BaseEpc baseEpc = new BaseEpc();
-                    baseEpc._EPC = AppApplication.mReader.convertUiiToEPC(res[1]);
+                    baseEpc._EPC = mReader.convertUiiToEPC(res[1]);
                     baseEpc._TID = strResult;
                     try
                     {

@@ -14,9 +14,12 @@ import com.city.trash.ui.activity.ReturnActivity;
 import com.city.trash.ui.adapter.InitListAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * 退还
@@ -61,6 +64,22 @@ public class ReturnFragment extends BaseFragment{
     @OnClick(R.id.btn_lease)
     public void onViewClicked() {
         Intent intent = new Intent(AppApplication.getApplication(), ReturnActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1:
+                if (resultCode==RESULT_OK){
+                    ACache aCache = ACache.get(AppApplication.getApplication());
+                    ArrayList<EPC> leaseResultlist = (ArrayList<EPC>) aCache.getAsObject("returnResult");
+                    if (leaseResultlist!=null){
+                        Collections.reverse(leaseResultlist);
+                        initListAdapter.updateDatas(leaseResultlist);
+                    }
+                }
+        }
     }
 }

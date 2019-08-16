@@ -37,7 +37,6 @@ import com.rscja.deviceapi.RFIDWithUHF;
 import com.rscja.deviceapi.entity.SimpleRFIDEntity;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +58,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.city.trash.ui.activity.MainActivity.mReader;
+
 public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements CreateRentContract.CreateRentView {
 
     @BindView(R.id.btn_scan)
@@ -69,7 +70,6 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     Button btnCommit;
     @BindView(R.id.btn_print)
     Button btnPrint;
-    int a = 1;
     LeaseScanadapter leaseScanadapter = null;
     @BindView(R.id.lin_lease)
     LinearLayout linLease;
@@ -174,8 +174,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 1;
-                readTag(a);
+                readTag("扫描货物");
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -185,34 +184,29 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == 139 || keyCode == 280) {
             if (event.getRepeatCount() == 0) {
-                a = 2;
-                readTag(a);
+                readTag("停止扫描");
             }
         }
         return super.onKeyUp(keyCode, event);
     }
 
-    private void readTag(int scan) {
+    private void readTag(String state) {
         linLease.setVisibility(View.VISIBLE);
-        if (scan == 1) {
-            if (AppApplication.mReader.startInventoryTag((byte) 0, (byte) 0)) {
+        if (state.equals("扫描货物")) {
+            if (mReader.startInventoryTag((byte) 0, (byte) 0)) {
                 btnScan.setText("停止扫描");
                 loopFlag = true;
-                a = 2;
                 new TagThread(10).start();
             } else {
                 btnScan.setText("扫描货物");
-                AppApplication.mReader.stopInventory();
+                mReader.stopInventory();
                 loopFlag = false;
-                a = 1;
-                AppApplication.initUHF();
                 ToastUtil.toast("开始扫描失败");
             }
         } else {
             btnScan.setText("扫描货物");
-            AppApplication.mReader.stopInventory();
+            mReader.stopInventory();
             loopFlag = false;
-            a = 1;
         }
     }
 
@@ -221,11 +215,15 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scan:
-                readTag(a);
+                if (btnScan.getText().toString().equals("扫描货物")){
+                    readTag("扫描货物");
+                }else {
+                    readTag("停止扫描");
+                }
                 break;
             case R.id.btn_commit:
-                if (a == 2) {
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 String name = tvName.getText().toString();
                 String id = tvTid.getText().toString();
@@ -250,14 +248,14 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), Tid,Double.valueOf(ReplenishmentAmount));
                 break;
             case R.id.btn_print:
-                if (a == 2) {
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 createDialog();
                 break;
             case R.id.btn_card:
-                if (a == 2) {
-                    readTag(a);
+                if (btnScan.getText().toString().equals("停止扫描")){
+                    readTag("停止扫描");
                 }
                 readCard();
                 break;
@@ -270,7 +268,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
         }
         //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
-        entity = AppApplication.mReader.readData("00000000",
+        entity = mReader.readData("00000000",
                 RFIDWithUHF.BankEnum.valueOf("TID"),
                 Integer.parseInt("0"),
                 Integer.parseInt("6"));
@@ -378,7 +376,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
         }
         PrintService.pl.printText("\n");
         PrintService.pl.write(new byte[]{0x1d, 0x0c});
-        startActivity(new Intent(LeaseActivity.this, MainActivity.class));
+        setResult(RESULT_OK);
         finish();
     }
 
@@ -394,7 +392,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             builder.setMessage("是否打印小票?");
             builder.setIcon(R.mipmap.ic_launcher_round);
             //点击对话框以外的区域是否让对话框消失
-            builder.setCancelable(true);
+            builder.setCancelable(false);
             //设置正面按钮
             builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
                 @Override
@@ -408,7 +406,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    startActivity(new Intent(LeaseActivity.this, MainActivity.class));
+                    setResult(RESULT_OK);
                     finish();
                 }
             });
@@ -430,9 +428,9 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             ToastUtil.toast("出库提交成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            Map<String,Object> map = (Map<String, Object>) baseBean.getData();
-            leaseResult = map.get("Id").toString();
-            Balance =  map.get("Balance").toString();
+            Map<String,Object> map1 = (Map<String, Object>) baseBean.getData();
+            leaseResult = map1.get("Id").toString();
+            Balance =  map1.get("Balance").toString();
             String name = tvName.getText().toString();
             String num = map.size() + "";
 
@@ -463,8 +461,9 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     protected void onDestroy() {
-        a = 2;
-        readTag(a);
+        if (btnScan.getText().toString().equals("停止扫描")){
+            readTag("停止扫描");
+        }
         super.onDestroy();
     }
 }
