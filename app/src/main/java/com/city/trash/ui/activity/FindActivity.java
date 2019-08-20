@@ -75,6 +75,21 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         linLease.setVisibility(View.GONE);
     }
 
+    private void initData(){
+        tvEpc.setText("");
+        tvLastCustomerName.setText("");
+        tvLastCustomerMobile.setText("");
+        tvLastRentTime.setText("");
+        tvCustomerName.setText("");
+        tvCustomerMobile.setText("");
+        tvRentTime.setText("");
+        tvRentDays.setText("");
+        tvDeposit.setText("");
+        tvFee.setText("");
+        tvOvertimeDays.setText("");
+        tvOvertimeFee.setText("");
+    }
+
     @Override
     public void findResult(BaseBean<FindBean> baseBean) {
         if (baseBean == null) {
@@ -122,6 +137,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         if (DateUtil.isFastClick()){
             return;
         }
+        initData();
         //AppApplication.mReader.setPower(10);
         SimpleRFIDEntity entity;
         entity = mReader.readData("00000000",

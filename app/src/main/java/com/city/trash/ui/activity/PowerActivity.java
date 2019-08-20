@@ -48,10 +48,9 @@ public class PowerActivity extends BaseActivity implements SeekBar.OnSeekBarChan
     }
 
     private void initview() {
-        String key1 = ACache.get(AppApplication.getApplication()).getAsString("key1");
-        if (TextUtils.isEmpty(key1)) {
-            key1 = "15";
-        }
+        String key1 = mReader.getPower()+"";
+        ACache.get(AppApplication.getApplication()).put("key1", key1);
+
         tvShow1.setText(key1);
         seekBar1.setProgress(Integer.valueOf(key1) - 5);
 
@@ -62,9 +61,9 @@ public class PowerActivity extends BaseActivity implements SeekBar.OnSeekBarChan
 
     @OnClick(R.id.btn_sure)
     public void onViewClicked() {
-        String key1 = tvShow1.getText().toString();
-        ACache.get(AppApplication.getApplication()).put("key1", key1);
-        mReader.setPower(Integer.valueOf(key1));
+        String power = tvShow1.getText().toString();
+        ACache.get(AppApplication.getApplication()).put("key1", power);
+        mReader.setPower(Integer.valueOf(power));
 
         ToastUtil.toast("保存成功");
         finish();
