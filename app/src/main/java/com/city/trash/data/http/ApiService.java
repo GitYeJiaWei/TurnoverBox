@@ -21,9 +21,9 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 
 public interface ApiService {
-    String BASE_URL = "http://192.168.66.3:8112/";//测试
+    //String BASE_URL = "http://192.168.66.3:8112/";//测试
     //String BASE_URL = "http://mall.ioter-e.com:8112/";
-    //String BASE_URL = "http://39.100.19.127:8081/";//正式
+    String BASE_URL = "http://39.100.19.127:8081/";//正式
 
 
     //token为方法名，基类中不能加入方法名

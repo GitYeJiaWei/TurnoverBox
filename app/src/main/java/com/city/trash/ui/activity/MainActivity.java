@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                 public void run() {
                     if (!mReader.init())
                     {
-                        ToastUtil.toast("init uhf fail,reset ...");
+                        //ToastUtil.toast("init uhf fail,reset ...");
                         if(cycleCount > 0)
                         {
                             cycleCount--;
@@ -162,7 +162,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
                         }
                     }else
                     {
-                        ToastUtil.toast("init uhf success");
+                        ToastUtil.toast("初始化成功！");
                     }
                 }
             });
@@ -361,14 +361,14 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mDrawerLayout.closeDrawer(mleftLin);
+            if (!NetUtils.isConnected(MainActivity.this)) {
+                ToastUtil.toast(R.string.error_network_unreachable);
+                return;
+            }
             if (position == 0)//headView click
             {
                 startActivity(new Intent(MainActivity.this, UserActivity.class));
             } else {
-                if (!NetUtils.isConnected(MainActivity.this)) {
-                    ToastUtil.toast(R.string.error_network_unreachable);
-                    return;
-                }
                 selectItem(position);
             }
         }
@@ -445,7 +445,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
 
     public void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "再按一次退出登录", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
         } else {
             finish();
@@ -455,12 +455,12 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mReader != null) {
+            mReader.free();
+        }
         if (PrintService.pl != null && PrintService.pl.getState() == PrinterClass.STATE_CONNECTED) {
             //断开打印连接
             PrintService.pl.disconnect();
-        }
-        if (mReader != null) {
-            mReader.free();
         }
     }
 

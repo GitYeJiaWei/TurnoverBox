@@ -215,14 +215,20 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_scan:
-                if (btnScan.getText().toString().equals("扫描货物")){
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                if (btnScan.getText().toString().equals("扫描货物")) {
                     readTag("扫描货物");
-                }else {
+                } else {
                     readTag("停止扫描");
                 }
                 break;
             case R.id.btn_commit:
-                if (btnScan.getText().toString().equals("停止扫描")){
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                btnCommit.setEnabled(false);
+
+                if (btnScan.getText().toString().equals("停止扫描")) {
                     readTag("停止扫描");
                 }
                 String name = tvName.getText().toString();
@@ -230,9 +236,10 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 String ReplenishmentAmount = etNum.getText().toString();
                 if (TextUtils.isEmpty(name) || TextUtils.isEmpty(id)) {
                     ToastUtil.toast("请扫描租赁卡再提交");
+                    btnCommit.setEnabled(true);
                     return;
                 }
-                if (TextUtils.isEmpty(ReplenishmentAmount)){
+                if (TextUtils.isEmpty(ReplenishmentAmount)) {
                     ReplenishmentAmount = "0";
                 }
                 ArrayList<String> arrayList = new ArrayList<>();
@@ -244,17 +251,20 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                     }
                 }
 
-                btnCommit.setEnabled(false);
-                mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), Tid,Double.valueOf(ReplenishmentAmount));
+                mPresenter.creatrent(AppApplication.getGson().toJson(arrayList), Tid, Double.valueOf(ReplenishmentAmount));
                 break;
             case R.id.btn_print:
-                if (btnScan.getText().toString().equals("停止扫描")){
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                if (btnScan.getText().toString().equals("停止扫描")) {
                     readTag("停止扫描");
                 }
                 createDialog();
                 break;
             case R.id.btn_card:
-                if (btnScan.getText().toString().equals("停止扫描")){
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                if (btnScan.getText().toString().equals("停止扫描")) {
                     readTag("停止扫描");
                 }
                 readCard();
@@ -306,7 +316,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                                                ToastUtil.toast("扫描租赁卡失败");
                                                return;
                                            }
-                                           if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
+                                           if (baseBean.getCode() == 0 && baseBean.getData() != null) {
                                                ToastUtil.toast("扫描租赁卡成功");
                                                tvName.setText(baseBean.getData().getContactName());
                                                tvTid.setText(cardCode);
@@ -365,7 +375,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                         "--------------------------\n" +
                         "累计租赁（个）：" + map.size() + "\n" +
                         "应付金额（元）：" + sum + "\n" +
-                        "余额（元）："+Balance+ "\n" +
+                        "余额（元）：" + Balance + "\n" +
                         "操作员：" + ACache.get(AppApplication.getApplication()).getAsString(LoginActivity.REAL_NAME) + "\n" +
                         "打印时间：" + str_time + "\n\n\n";
         try {
@@ -381,56 +391,56 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     }
 
     private void createDialog() {
-        if (ScreenUtils.Utils.isFastClick()) {
-            // 进行点击事件后的逻辑操作
-            if (TextUtils.isEmpty(leaseResult)) {
-                ToastUtil.toast("请先提交再打印！");
-                return;
-            }
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("提交成功：");
-            builder.setMessage("是否打印小票?");
-            builder.setIcon(R.mipmap.ic_launcher_round);
-            //点击对话框以外的区域是否让对话框消失
-            builder.setCancelable(false);
-            //设置正面按钮
-            builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    print();
-                    dialog.dismiss();
-                }
-            });
-            //设置反面按钮
-            builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    setResult(RESULT_OK);
-                    finish();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            //显示对话框
-            dialog.show();
+        // 进行点击事件后的逻辑操作
+        if (TextUtils.isEmpty(leaseResult)) {
+            ToastUtil.toast("请先提交再打印！");
+            btnCommit.setEnabled(true);
+            return;
         }
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提交成功：");
+        builder.setMessage("是否打印小票?");
+        builder.setIcon(R.mipmap.turnoverbox);
+        //点击对话框以外的区域是否让对话框消失
+        builder.setCancelable(false);
+        //设置正面按钮
+        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                btnCommit.setEnabled(true);
+                print();
+                dialog.dismiss();
+            }
+        });
+        //设置反面按钮
+        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                btnCommit.setEnabled(true);
+                dialog.dismiss();
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        //显示对话框
+        dialog.show();
     }
 
     @Override
     public void createRentResult(BaseBean<Object> baseBean) {
-        btnCommit.setEnabled(true);
         if (baseBean == null) {
+            btnCommit.setEnabled(true);
             ToastUtil.toast("出库提交失败");
             return;
         }
-        if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
+        if (baseBean.getCode() == 0 && baseBean.getData() != null) {
             ToastUtil.toast("出库提交成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            Map<String,Object> map1 = (Map<String, Object>) baseBean.getData();
+            Map<String, Object> map1 = (Map<String, Object>) baseBean.getData();
             leaseResult = map1.get("Id").toString();
-            Balance =  map1.get("Balance").toString();
+            Balance = map1.get("Balance").toString();
             String name = tvName.getText().toString();
             String num = map.size() + "";
 
@@ -449,6 +459,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
             createDialog();
         } else {
+            btnCommit.setEnabled(true);
             ToastUtil.toast(baseBean.getMessage());
         }
 
@@ -461,7 +472,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     protected void onDestroy() {
-        if (btnScan.getText().toString().equals("停止扫描")){
+        if (btnScan.getText().toString().equals("停止扫描")) {
             readTag("停止扫描");
         }
         super.onDestroy();

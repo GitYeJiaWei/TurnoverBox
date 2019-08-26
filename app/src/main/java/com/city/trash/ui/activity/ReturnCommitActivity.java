@@ -155,16 +155,16 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
 
     @Override
     public void createReturnResult(BaseBean<Object> baseBean) {
-        btnCommit.setEnabled(true);
         if (baseBean == null) {
+            btnCommit.setEnabled(true);
             ToastUtil.toast("退还失败");
             return;
         }
-        if (baseBean.getCode() == 0 && baseBean.getData()!=null) {
+        if (baseBean.getCode() == 0 && baseBean.getData() != null) {
             ToastUtil.toast("退还成功");
 
             ACache aCache = ACache.get(AppApplication.getApplication());
-            Map<String,Object> map = (Map<String, Object>) baseBean.getData();
+            Map<String, Object> map = (Map<String, Object>) baseBean.getData();
             leaseResult = map.get("Id").toString();
             Balance = map.get("Balance").toString();
             String name = tvName.getText().toString();
@@ -184,7 +184,9 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
             aCache.put("returnResult", leaseResultlist, ACache.TIME_DAY);
 
             createDialog();
+
         } else {
+            btnCommit.setEnabled(true);
             ToastUtil.toast(baseBean.getMessage());
         }
     }
@@ -242,6 +244,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
     private void createDialog() {
         if (TextUtils.isEmpty(leaseResult)) {
             ToastUtil.toast("请先提交再打印！");
+            btnCommit.setEnabled(true);
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -254,6 +257,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                btnCommit.setEnabled(true);
                 print();
                 dialog.dismiss();
             }
@@ -262,6 +266,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
         builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                btnCommit.setEnabled(true);
                 dialog.dismiss();
                 setResult(RESULT_OK);
                 finish();
@@ -276,23 +281,26 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_commit:
-                if (ScreenUtils.Utils.isFastClick()) {
-                    if (s1 < 0) {
-                        ToastUtil.toast("应退金额不能小于0元，请先充值再退还");
-                        return;
-                    }
-                    double damageFee = 0;
-                    if (!TextUtils.isEmpty(tvMoney.getText().toString())) {
-                        damageFee = Double.valueOf(tvMoney.getText().toString());
-                    }
-                    btnCommit.setEnabled(false);
-                    mPresenter.CreateReturn(id, damageFee + "", listEpcJson);
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                btnCommit.setEnabled(false);
+
+                if (s1 < 0) {
+                    ToastUtil.toast("应退金额不能小于0元，请先充值再退还");
+                    btnCommit.setEnabled(true);
+                    return;
                 }
+                double damageFee = 0;
+                if (!TextUtils.isEmpty(tvMoney.getText().toString())) {
+                    damageFee = Double.valueOf(tvMoney.getText().toString());
+                }
+
+                mPresenter.CreateReturn(id, damageFee + "", listEpcJson);
                 break;
             case R.id.btn_print:
-                if (ScreenUtils.Utils.isFastClick()) {
-                    createDialog();
-                }
+                if (!ScreenUtils.Utils.isFastClick()) return;
+
+                createDialog();
                 break;
         }
     }
