@@ -1,16 +1,14 @@
 package com.city.trash.common;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
-
+import android.os.Looper;
 
 import com.city.trash.AppApplication;
-import com.city.trash.common.util.VariableConstant;
+import com.city.trash.common.util.ToastUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,43 +24,102 @@ import java.util.TimeZone;
 /**
  * 全局异常捕获
  */
-public class AppCaughtException implements UncaughtExceptionHandler
-{
-    private UncaughtExceptionHandler mDefaultUncaughtExceptionHandler;// 系统的异常捕获对象
+public class AppCaughtException implements UncaughtExceptionHandler {
+    private UncaughtExceptionHandler mDefaultUncaughtExceptionHandler;// 系统默认的异常捕获对象
 
-    public AppCaughtException()
-    {
+    public AppCaughtException() {
+        // 获取系统默认的UncaughtException处理器
         mDefaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
 
+    /**
+     * 当UncaughtException发生时会转入该函数来处理
+     * <p>
+     * ComponentName，顾名思义，就是组件名称，通过调用Intent中的setComponent方法，
+     * 我们可以打开另外一个应用中的Activity或者服务
+     *
+     * @param thread
+     * @param ex
+     */
     @Override
-    public void uncaughtException(Thread thread, Throwable ex)
-    {
+    public void uncaughtException(Thread thread, Throwable ex) {
+        //把错误日志写到本地
         savaInfoToSD(AppApplication.getApplication(), ex);
-        if (ex == null && mDefaultUncaughtExceptionHandler != null)
-        {
+        if (!handleException(thread, ex) && mDefaultUncaughtExceptionHandler != null) {
+            // 如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
-        } else
-        {
-            Intent intent = new Intent();
+        } else {
+            /*Intent intent = new Intent();
+            //第一个参数是要启动应用的包名称，第二个参数是你要启动的Activity或者Service的全称（包名+类名）
             intent.setComponent(
-                    new ComponentName(VariableConstant.APP_PACKAGE_MAIN, "com.ioter.clothesstrore.video.floatUtil.EpcShowMainActivity"));
+                    new ComponentName(VariableConstant.APP_PACKAGE_MAIN, "com.ioter.medical.ui.activity.LoginActivity"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            AppApplication.getApplication().startActivity(intent);
+            AppApplication.getApplication().startActivity(intent);*/
 
+            //退出程序
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(1);
         }
     }
 
-    private String savaInfoToSD(Context context, Throwable ex)
-    {
+    /**
+     * 自定义错误处理,收集错误信息 发送错误报告等操作均在此完成.
+     *
+     * @param ex
+     * @return true:如果处理了该异常信息;否则返回false.
+     */
+    private boolean handleException(Thread thread, Throwable ex) {
+        if (ex == null) {
+            return false;
+        }
+        // 使用Toast来显示异常信息
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                ToastUtil.toast("喵,很抱歉,程序出现异常,即将退出!");
+                Looper.loop();
+            }
+        }.start();
+        //把异常信息和设备信息上传到服务器
+        subMitThreadAndDeviceInfo(AppApplication.getApplication(), thread, ex);
+        return true;
+    }
+
+    /**
+     * 上传错误日志
+     * @param context
+     * @param thread
+     * @param ex
+     */
+    private void subMitThreadAndDeviceInfo(Context context,Thread thread,Throwable ex){
+        StringBuffer sb = new StringBuffer();
+
+        for (Map.Entry<String, String> entry : obtainSimpleInfo(context)
+                .entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            sb.append(key).append(" = ").append(value).append("\n");
+        }
+
+        sb.append(obtainExceptionInfo(ex));
+        String error = sb.toString();
+
+    }
+
+    /**
+     * 保存错误日志到本地
+     *
+     * @param context
+     * @param ex
+     * @return
+     */
+    private String savaInfoToSD(Context context, Throwable ex) {
         String fileName = null;
         StringBuffer sb = new StringBuffer();
 
         for (Map.Entry<String, String> entry : obtainSimpleInfo(context)
-                .entrySet())
-        {
+                .entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             sb.append(key).append(" = ").append(value).append("\n");
@@ -71,36 +128,30 @@ public class AppCaughtException implements UncaughtExceptionHandler
         sb.append(obtainExceptionInfo(ex));
 
         if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED))
-        {
+                Environment.MEDIA_MOUNTED)) {
             String dirPath = Environment.getExternalStorageDirectory()
                     .getPath().toString()
                     + "/";
             File dir = new File(dirPath + "crashForDeveloper" + File.separator);
-            if (!dir.exists())
-            {
+            if (!dir.exists()) {
                 dir.mkdir();
             }
 
             File[] files = dir.listFiles();
-            if (files.length > 20)
-            {
+            if (files.length > 20) {
                 // delete when record over 20
-                for (int i = 0; i < files.length; i++)
-                {
+                for (int i = 0; i < files.length; i++) {
                     files[i].delete();
                 }
             }
-            try
-            {
+            try {
                 fileName = dir.toString() + File.separator
                         + paserTime(System.currentTimeMillis()) + ".txt";
                 FileOutputStream fos = new FileOutputStream(fileName);
                 fos.write(sb.toString().getBytes());
                 fos.flush();
                 fos.close();
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -115,17 +166,14 @@ public class AppCaughtException implements UncaughtExceptionHandler
      * @param context
      * @return
      */
-    private HashMap<String, String> obtainSimpleInfo(Context context)
-    {
+    private HashMap<String, String> obtainSimpleInfo(Context context) {
         HashMap<String, String> map = new HashMap<String, String>();
         PackageManager mPackageManager = context.getPackageManager();
         PackageInfo mPackageInfo = null;
-        try
-        {
+        try {
             mPackageInfo = mPackageManager.getPackageInfo(
                     context.getPackageName(), PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e)
-        {
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -145,8 +193,7 @@ public class AppCaughtException implements UncaughtExceptionHandler
      * @param milliseconds
      * @return
      */
-    private String paserTime(long milliseconds)
-    {
+    private String paserTime(long milliseconds) {
         System.setProperty("user.timezone", "Asia/Shanghai");
         TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
         TimeZone.setDefault(tz);
@@ -162,8 +209,7 @@ public class AppCaughtException implements UncaughtExceptionHandler
      * @param throwable
      * @return
      */
-    private String obtainExceptionInfo(Throwable throwable)
-    {
+    private String obtainExceptionInfo(Throwable throwable) {
         StringWriter mStringWriter = new StringWriter();
         PrintWriter mPrintWriter = new PrintWriter(mStringWriter);
         throwable.printStackTrace(mPrintWriter);

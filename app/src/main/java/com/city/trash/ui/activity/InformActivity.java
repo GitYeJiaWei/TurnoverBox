@@ -8,6 +8,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
+import com.city.trash.data.http.ApiService;
 import com.city.trash.di.component.AppComponent;
 
 import butterknife.BindView;
@@ -38,10 +39,10 @@ public class InformActivity extends BaseActivity {
         String ip = ACache.get(AppApplication.getApplication()).getAsString("ip");
         String host = ACache.get(AppApplication.getApplication()).getAsString("host");
         if (ip == null) {
-            ip = "39.100.19.127";
+            ip = ApiService.ip;
         }
         if (host == null){
-            host = "8081";
+            host = ApiService.host;
         }
         etIp.setText(ip);
         etHost.setText(host);
@@ -58,6 +59,7 @@ public class InformActivity extends BaseActivity {
             ACache.get(AppApplication.getApplication()).put("ip",ip);
             ACache.get(AppApplication.getApplication()).put("host",host);
             ToastUtil.toast("保存成功");
+            finish();
         }
 
     }

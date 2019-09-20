@@ -60,8 +60,8 @@
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                //只监测有没有网络可用即可
                 <!--
+                //只监测有没有网络可用即可
                                     <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                                 <action android:name="android.net.wifi.STATE_CHANGE" />
                 -->
@@ -113,7 +113,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.activity.PowerActivity"
+        <activity
+            android:name=".ui.activity.PowerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
