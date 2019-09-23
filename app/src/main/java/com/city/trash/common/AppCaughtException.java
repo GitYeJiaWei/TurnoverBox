@@ -8,7 +8,10 @@ import android.os.Environment;
 import android.os.Looper;
 
 import com.city.trash.AppApplication;
+import com.city.trash.bean.BaseBean;
+import com.city.trash.common.http.BaseUrlInterceptor;
 import com.city.trash.common.util.ToastUtil;
+import com.city.trash.data.http.ApiService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,6 +23,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 全局异常捕获
@@ -49,10 +62,15 @@ public class AppCaughtException implements UncaughtExceptionHandler {
             // 如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
         } else {
-            /*Intent intent = new Intent();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+           /* Intent intent = new Intent();
             //第一个参数是要启动应用的包名称，第二个参数是你要启动的Activity或者Service的全称（包名+类名）
             intent.setComponent(
-                    new ComponentName(VariableConstant.APP_PACKAGE_MAIN, "com.ioter.medical.ui.activity.LoginActivity"));
+                    new ComponentName(VariableConstant.APP_PACKAGE_MAIN, "com.city.trash.ui.activity.LoginActivity"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             AppApplication.getApplication().startActivity(intent);*/
 
@@ -77,7 +95,7 @@ public class AppCaughtException implements UncaughtExceptionHandler {
             @Override
             public void run() {
                 Looper.prepare();
-                ToastUtil.toast("喵,很抱歉,程序出现异常,即将退出!");
+                ToastUtil.toast("很抱歉,程序出现异常,即将退出!");
                 Looper.loop();
             }
         }.start();
@@ -88,11 +106,12 @@ public class AppCaughtException implements UncaughtExceptionHandler {
 
     /**
      * 上传错误日志
+     *
      * @param context
      * @param thread
      * @param ex
      */
-    private void subMitThreadAndDeviceInfo(Context context,Thread thread,Throwable ex){
+    private void subMitThreadAndDeviceInfo(Context context, Thread thread, Throwable ex) {
         StringBuffer sb = new StringBuffer();
 
         for (Map.Entry<String, String> entry : obtainSimpleInfo(context)
@@ -105,7 +124,57 @@ public class AppCaughtException implements UncaughtExceptionHandler {
         sb.append(obtainExceptionInfo(ex));
         String error = sb.toString();
 
+        Map<String, String> map = new HashMap<>();
+        map.put("Content", error);
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        //添加拦截器，自动追加参数
+        builder.addInterceptor(new BaseUrlInterceptor());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                //设置基础的URL
+                .baseUrl(ApiService.BASE_URL)
+                //设置内容格式,这种对应的数据返回值是Gson类型，需要导包
+                .addConverterFactory(GsonConverterFactory.create())
+                //设置支持RxJava，应用observable观察者，需要导包
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(builder.build())
+                .build();
+
+        ApiService apIservice = retrofit.create(ApiService.class);
+        Observable<BaseBean> qqDataCall = apIservice.writelog(map);
+        qqDataCall.subscribeOn(Schedulers.io())//请求数据的事件发生在io线程
+                .observeOn(AndroidSchedulers.mainThread())//请求完成后在主线程更新UI
+                .subscribe(new Observer<BaseBean>() {
+                               @Override
+                               public void onSubscribe(Disposable d) {
+                               }
+
+                               @Override
+                               public void onNext(BaseBean baseBean) {
+                                   if (baseBean == null) {
+                                       ToastUtil.toast("错误信息上传失败");
+                                       return;
+                                   }
+                                   if (baseBean.getCode() == 0 && baseBean.getData() != null) {
+                                       ToastUtil.toast("错误信息已上传");
+                                   } else {
+                                       ToastUtil.toast(baseBean.getMessage());
+                                   }
+                               }
+
+                               @Override
+                               public void onError(Throwable e) {
+                                   ToastUtil.toast(e.getMessage());
+                               }
+
+                               @Override
+                               public void onComplete() {
+                               }//订阅
+                           }
+                );
     }
+
 
     /**
      * 保存错误日志到本地

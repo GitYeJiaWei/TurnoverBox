@@ -32,6 +32,11 @@ public interface ApiService {
     @POST("token")//登录
     Observable<LoginBean> login(@FieldMap Map<String ,String> params);
 
+    //提交Log
+    @FormUrlEncoded
+    @POST("/api/Log/WriteLog")
+    Observable<BaseBean> writelog(@FieldMap Map<String,String> params);
+
     //更改密码
     @FormUrlEncoded
     @POST("/api/User/ChangePassword")

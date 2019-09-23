@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
         registerReceiver(myReceive, filter);//注册广播
 
         mPresenter.feeRule(1);
+
         initview();
         selectItem(0);
         String key1 = ACache.get(AppApplication.getApplication()).getAsString("key1");
