@@ -2,7 +2,9 @@ package com.city.trash.di.module;
 
 import android.app.Application;
 
+import com.city.trash.AppApplication;
 import com.city.trash.common.LenientGsonConverterFactory;
+import com.city.trash.common.util.ACache;
 import com.google.gson.Gson;
 import com.city.trash.common.http.BaseUrlInterceptor;
 import com.city.trash.data.http.ApiService;
@@ -67,9 +69,13 @@ public class HttpModule
     public Retrofit provideRetrofit(OkHttpClient okHttpClient)
     {
 
+        String BASE_URL = ACache.get(AppApplication.getApplication()).getAsString("BASE_URL");
+        if (BASE_URL == null){
+            BASE_URL = ApiService.BASE_URL;
+        }
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(ApiService.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 //.addConverterFactory(LenientGsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

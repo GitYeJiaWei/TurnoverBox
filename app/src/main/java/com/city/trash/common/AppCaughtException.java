@@ -10,6 +10,7 @@ import android.os.Looper;
 import com.city.trash.AppApplication;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.common.http.BaseUrlInterceptor;
+import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.data.http.ApiService;
 
@@ -56,14 +57,12 @@ public class AppCaughtException implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        //把错误日志写到本地
-        savaInfoToSD(AppApplication.getApplication(), ex);
         if (!handleException(thread, ex) && mDefaultUncaughtExceptionHandler != null) {
             // 如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -99,6 +98,9 @@ public class AppCaughtException implements UncaughtExceptionHandler {
                 Looper.loop();
             }
         }.start();
+
+        //把错误日志写到本地
+        savaInfoToSD(AppApplication.getApplication(), ex);
         //把异常信息和设备信息上传到服务器
         subMitThreadAndDeviceInfo(AppApplication.getApplication(), thread, ex);
         return true;
@@ -131,9 +133,14 @@ public class AppCaughtException implements UncaughtExceptionHandler {
         //添加拦截器，自动追加参数
         builder.addInterceptor(new BaseUrlInterceptor());
 
+        String BASE_URL = ACache.get(AppApplication.getApplication()).getAsString("BASE_URL");
+        if (BASE_URL == null){
+            BASE_URL = ApiService.BASE_URL;
+        }
+
         Retrofit retrofit = new Retrofit.Builder()
                 //设置基础的URL
-                .baseUrl(ApiService.BASE_URL)
+                .baseUrl(BASE_URL)
                 //设置内容格式,这种对应的数据返回值是Gson类型，需要导包
                 .addConverterFactory(GsonConverterFactory.create())
                 //设置支持RxJava，应用observable观察者，需要导包

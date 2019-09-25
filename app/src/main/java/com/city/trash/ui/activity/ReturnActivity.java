@@ -271,13 +271,16 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
             cardCode = entity.getData();
             if (!TextUtils.isEmpty(cardCode)) {
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
-
+                String BASE_URL = ACache.get(AppApplication.getApplication()).getAsString("BASE_URL");
+                if (BASE_URL == null){
+                    BASE_URL = ApiService.BASE_URL;
+                }
                 Map<String, String> map = new HashMap<>();
                 map.put("cardCode", cardCode);
                 map.put("cardType", "2");
                 Retrofit retrofit = new Retrofit.Builder()
                         //设置基础的URL
-                        .baseUrl(ApiService.BASE_URL)
+                        .baseUrl(BASE_URL)
                         //设置内容格式,这种对应的数据返回值是Gson类型，需要导包
                         .addConverterFactory(GsonConverterFactory.create())
                         //设置支持RxJava，应用observable观察者，需要导包
