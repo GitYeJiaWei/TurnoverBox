@@ -24,7 +24,9 @@ public interface ApiService {
     /*String BASE_URL = "http://192.168.66.3:8112/";//测试
     String ip = "192.168.66.3";//测试
     String host = "8112";//测试*/
+
     //String BASE_URL = "http://mall.ioter-e.com:8112/";
+
     String BASE_URL = "http://39.100.19.127:8081/";//正式
     String ip = "39.100.19.127";//正式
     String host = "8081";//正式

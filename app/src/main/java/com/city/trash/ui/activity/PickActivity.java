@@ -48,8 +48,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     ListView tvPick;
     @BindView(R.id.tv_num)
     TextView tvNum;
-    @BindView(R.id.lin_lease)
-    LinearLayout linLease;
+    private LinearLayout linLease;
     LeaseScanadapter leaseScanadapter;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private HashMap<String, String> map = new HashMap<>();
@@ -73,6 +72,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     @Override
     public void init() {
         setTitle("报废登记");
+        linLease = findViewById(R.id.lin_lease);
         linLease.setVisibility(View.GONE);
         //AppApplication.mReader.setPower(10);
         hashMap.clear();

@@ -59,8 +59,6 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
     Button btnCommit;
     @BindView(R.id.btn_print)
     Button btnPrint;
-    @BindView(R.id.lin_lease)
-    LinearLayout linLease;
     private BaseBean<List<ReturnBean>> returnBean;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private ReturnCommitAdapter returnCommitAdapter;

@@ -64,10 +64,10 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
     ListView listLease;
     @BindView(R.id.btn_commit)
     Button btnCommit;
-    @BindView(R.id.lin_lease)
-    LinearLayout linLease;
     @BindView(R.id.btn_card)
     Button btnCard;
+
+    private LinearLayout linLease;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
     private HashMap<String, String> map = new HashMap<>();
@@ -132,6 +132,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public void init() {
+        linLease = findViewById(R.id.lin_lease);
         baseBean = (BaseBean<FeeRule>) ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
         if (baseBean == null) {
             finish();

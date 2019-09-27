@@ -70,9 +70,6 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     Button btnCommit;
     @BindView(R.id.btn_print)
     Button btnPrint;
-    LeaseScanadapter leaseScanadapter = null;
-    @BindView(R.id.lin_lease)
-    LinearLayout linLease;
     @BindView(R.id.tv_tid)
     TextView tvTid;
     @BindView(R.id.tv_name)
@@ -83,6 +80,8 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     Button btnCard;
     @BindView(R.id.et_num)
     EditText etNum;
+    private LinearLayout linLease;
+    LeaseScanadapter leaseScanadapter = null;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
     private HashMap<String, String> map = new HashMap<>();
@@ -107,6 +106,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     @Override
     public void init() {
         setTitle("扫描出库");
+        linLease = findViewById(R.id.lin_lease);
         linLease.setVisibility(View.GONE);
         hashMap.clear();
         map.clear();
@@ -322,8 +322,8 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                                            }
                                            if (baseBean.getCode() == 0 && baseBean.getData() != null) {
                                                ToastUtil.toast("扫描租赁卡成功");
-                                               tvName.setText(baseBean.getData().getContactName());
-                                               tvTid.setText(cardCode);
+                                               tvName.setText(baseBean.getData().getContactName()+"");
+                                               tvTid.setText(cardCode+"");
                                                Tid = baseBean.getData().getId();
                                            } else {
                                                ToastUtil.toast(baseBean.getMessage());

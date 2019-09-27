@@ -55,8 +55,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
     TextView tvOvertimeDays;
     @BindView(R.id.tv_OvertimeFee)
     TextView tvOvertimeFee;
-    @BindView(R.id.lin_lease)
-    LinearLayout linLease;
+    private LinearLayout linLease;
 
     @Override
     public int setLayout() {
@@ -72,6 +71,7 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
     @Override
     public void init() {
         setTitle("扫码查询");
+        linLease = findViewById(R.id.lin_lease);
         linLease.setVisibility(View.GONE);
     }
 
