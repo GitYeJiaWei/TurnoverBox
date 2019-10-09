@@ -179,7 +179,7 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                 leaseResultlist = new ArrayList<>();
             }
             leaseResultlist.add(epc);
-            aCache.put("returnResult", leaseResultlist, ACache.TIME_DAY);
+            aCache.put("returnResult", leaseResultlist, ACache.TIME_HOUR);
 
             createDialog();
 

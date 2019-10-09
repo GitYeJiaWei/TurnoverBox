@@ -207,7 +207,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
                 leaseResultlist = new ArrayList<>();
             }
             leaseResultlist.add(epc);
-            aCache.put("pickResult", leaseResultlist, ACache.TIME_DAY);
+            aCache.put("pickResult", leaseResultlist, ACache.TIME_HOUR);
             startActivity(new Intent(this, MainActivity.class));
         } else {
             ToastUtil.toast(baseBean.getMessage());

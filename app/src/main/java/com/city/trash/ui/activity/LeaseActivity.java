@@ -62,24 +62,20 @@ import static com.city.trash.ui.activity.MainActivity.mReader;
 
 public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements CreateRentContract.CreateRentView {
 
-    @BindView(R.id.btn_scan)
-    Button btnScan;
     @BindView(R.id.list_lease)
     ListView listLease;
-    @BindView(R.id.btn_commit)
-    Button btnCommit;
     @BindView(R.id.btn_print)
     Button btnPrint;
-    @BindView(R.id.tv_tid)
-    TextView tvTid;
-    @BindView(R.id.tv_name)
-    TextView tvName;
-    @BindView(R.id.tv_sum)
-    TextView tvSum;
     @BindView(R.id.btn_card)
     Button btnCard;
     @BindView(R.id.et_num)
     EditText etNum;
+
+    private TextView tvName;
+    private TextView tvSum;
+    private TextView tvTid;
+    private Button btnScan;
+    private Button btnCommit;
     private LinearLayout linLease;
     LeaseScanadapter leaseScanadapter = null;
     private ArrayList<EPC> epclist = new ArrayList<>();
@@ -106,6 +102,11 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     @Override
     public void init() {
         setTitle("扫描出库");
+        btnScan = findViewById(R.id.btn_scan);
+        tvTid = findViewById(R.id.tv_tid);
+        tvName = findViewById(R.id.tv_name);
+        tvSum = findViewById(R.id.tv_sum);
+        btnCommit = findViewById(R.id.btn_commit);
         linLease = findViewById(R.id.lin_lease);
         linLease.setVisibility(View.GONE);
         hashMap.clear();
@@ -459,7 +460,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
                 leaseResultlist = new ArrayList<>();
             }
             leaseResultlist.add(epc);
-            aCache.put("leaseResult", leaseResultlist, ACache.TIME_DAY);
+            aCache.put("leaseResult", leaseResultlist, ACache.TIME_HOUR);
 
             createDialog();
         } else {

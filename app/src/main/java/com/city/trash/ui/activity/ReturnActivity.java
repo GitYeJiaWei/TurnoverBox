@@ -54,19 +54,15 @@ import static com.city.trash.ui.activity.MainActivity.mReader;
 
 public class ReturnActivity extends BaseActivity<ReturnPresenter> implements ReturnContract.ReturnView {
 
-    @BindView(R.id.tv_tid)
-    TextView tvTid;
-    @BindView(R.id.tv_name)
-    TextView tvName;
-    @BindView(R.id.btn_scan)
-    Button btnScan;
     @BindView(R.id.list_lease)
     ListView listLease;
-    @BindView(R.id.btn_commit)
-    Button btnCommit;
     @BindView(R.id.btn_card)
     Button btnCard;
 
+    private Button btnScan;
+    private TextView tvTid;
+    private TextView tvName;
+    private Button btnCommit;
     private LinearLayout linLease;
     private ArrayList<EPC> epclist = new ArrayList<>();
     private ConcurrentHashMap<String, List<EPC>> hashMap = new ConcurrentHashMap<>();
@@ -132,7 +128,11 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public void init() {
+        btnScan = findViewById(R.id.btn_scan);
+        tvTid = findViewById(R.id.tv_tid);
+        tvName = findViewById(R.id.tv_name);
         linLease = findViewById(R.id.lin_lease);
+        btnCommit = findViewById(R.id.btn_commit);
         baseBean = (BaseBean<FeeRule>) ACache.get(AppApplication.getApplication()).getAsObject("feeRule");
         if (baseBean == null) {
             finish();
