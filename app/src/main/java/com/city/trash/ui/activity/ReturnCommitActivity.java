@@ -112,6 +112,8 @@ public class ReturnCommitActivity extends BaseActivity<CreateReturnPresenter> im
                 epclist.add(epc);
                 BigDecimal bd1 = new BigDecimal(Double.toString(rb.getReturnAmount()));
                 BigDecimal bd2 = new BigDecimal(Double.toString(sum));
+
+                //累加应退总额和个数
                 sum = bd1.add(bd2).doubleValue();
                 num += rb.getQty();
             }

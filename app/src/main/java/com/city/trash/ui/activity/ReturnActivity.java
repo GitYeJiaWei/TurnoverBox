@@ -179,7 +179,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 280) {
+        if (keyCode == 139 || keyCode == 293) {
             if (event.getRepeatCount() == 0) {
                 readTag("扫描货物");
             }
@@ -189,7 +189,7 @@ public class ReturnActivity extends BaseActivity<ReturnPresenter> implements Ret
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 280) {
+        if (keyCode == 139 || keyCode == 293) {
             if (event.getRepeatCount() == 0) {
                 readTag("停止扫描");
             }

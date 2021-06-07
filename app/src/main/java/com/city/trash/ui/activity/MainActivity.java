@@ -422,7 +422,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Fragment fragment = (BaseFragment) mAdapter.instantiateItem(vpager, vpager.getCurrentItem());
-        if (keyCode == 139 || keyCode == 280) {
+        if (keyCode == 139 || keyCode == 293) {
             if (event.getRepeatCount() == 0) {
                 ((BaseFragment) fragment).myOnKeyDwon();
             }
@@ -436,7 +436,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         Fragment fragment = (BaseFragment) mAdapter.instantiateItem(vpager, vpager.getCurrentItem());
-        if (keyCode == 139 || keyCode == 280) {
+        if (keyCode == 139 || keyCode == 293) {
             if (event.getRepeatCount() == 0) {
                 ((BaseFragment) fragment).myOnKeyUp();
             }

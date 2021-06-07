@@ -3,7 +3,6 @@ package com.city.trash.di.module;
 import android.app.Application;
 
 import com.city.trash.AppApplication;
-import com.city.trash.common.LenientGsonConverterFactory;
 import com.city.trash.common.util.ACache;
 import com.google.gson.Gson;
 import com.city.trash.common.http.BaseUrlInterceptor;
