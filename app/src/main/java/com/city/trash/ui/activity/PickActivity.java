@@ -161,7 +161,7 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
     private void readTag(String state) {
         linLease.setVisibility(View.VISIBLE);
         if (state.equals("扫描货物")) {
-            if (mReader.startInventoryTag((byte) 0, (byte) 0)) {
+            if (mReader.startInventoryTag()) {
                 btnScan.setText("停止扫描");
                 loopFlag = true;
                 new TagThread(10).start();

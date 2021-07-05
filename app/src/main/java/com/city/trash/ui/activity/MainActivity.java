@@ -1,13 +1,11 @@
 package com.city.trash.ui.activity;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.app.ProgressDialog;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,22 +17,9 @@ import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
@@ -52,14 +37,10 @@ import com.city.trash.presenter.contract.RuleListContract;
 import com.city.trash.ui.adapter.DrawerListAdapter;
 import com.city.trash.ui.adapter.DrawerListContent;
 import com.city.trash.ui.adapter.MyFragmentPagerAdapter;
-import com.city.trash.ui.fragment.BaseFragment;
-import com.city.trash.ui.fragment.HomeFragment;
-import com.city.trash.ui.fragment.LeaseFragment;
-import com.city.trash.ui.fragment.ReturnFragment;
-import com.city.trash.ui.fragment.SettingFragment;
+import com.city.trash.ui.fragment.*;
 import com.qs.helper.printer.PrintService;
 import com.qs.helper.printer.PrinterClass;
-import com.rscja.deviceapi.RFIDWithUHF;
+import com.rscja.deviceapi.RFIDWithUHFUART;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,7 +76,7 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     private boolean isLoading;
     private MyReceive myReceive;
     private String path;
-    public static RFIDWithUHF mReader; //RFID扫描
+    public static RFIDWithUHFUART mReader; //RFID扫描
 
     @Override
     public int setLayout() {
@@ -120,53 +101,63 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
 
         initview();
         selectItem(0);
-        String key1 = ACache.get(AppApplication.getApplication()).getAsString("key1");
-        if (TextUtils.isEmpty(key1)) {
-            key1 = "10";
+        initUHF();
+    }
+
+    /**
+     * �豸�ϵ��첽��
+     *
+     * @author liuruifeng
+     */
+    public class InitTask extends AsyncTask<String, Integer, Boolean> {
+        ProgressDialog mypDialog;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            return mReader.init();
         }
 
-        initUHF();
-        mReader.setPower(Integer.valueOf(key1));
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            mypDialog.cancel();
+
+            if (!result) {
+                ToastUtil.toast("初始化失败");
+            } else {
+                ToastUtil.toast("初始化成功");
+                String key1 = ACache.get(AppApplication.getApplication()).getAsString("key1");
+                if (TextUtils.isEmpty(key1)) {
+                    key1 = "10";
+                }
+                mReader.setPower(Integer.valueOf(key1));
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mypDialog = new ProgressDialog(MainActivity.this);
+            mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mypDialog.setMessage("init...");
+            mypDialog.setCanceledOnTouchOutside(false);
+            mypDialog.show();
+        }
     }
 
     //初始化RFID扫描
-    private int cycleCount = 3;//循环3次初始化
-    //初始化RFID扫描
-    public void initUHF()
-    {
-        cycleCount = 3;
-        try
-        {
-            mReader = RFIDWithUHF.getInstance();
-        } catch (Exception ex)
-        {
+    public void initUHF() {
+        try {
+            mReader = RFIDWithUHFUART.getInstance();
+        } catch (Exception ex) {
             ToastUtil.toast(ex.getMessage());
             return;
         }
-
-        if (mReader != null)
-        {
-            AppApplication.getExecutorService().execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mReader.init())
-                    {
-                        //ToastUtil.toast("init uhf fail,reset ...");
-                        if(cycleCount > 0)
-                        {
-                            cycleCount--;
-                            if (mReader != null)
-                            {
-                                mReader.free();
-                            }
-                            initUHF();
-                        }
-                    }else
-                    {
-                        ToastUtil.toast("初始化成功！");
-                    }
-                }
-            });
+        if (mReader != null) {
+            new InitTask().execute();
         }
     }
 

@@ -48,6 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.rscja.deviceapi.interfaces.IUHF;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -194,7 +195,7 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
     private void readTag(String state) {
         linLease.setVisibility(View.VISIBLE);
         if (state.equals("扫描货物")) {
-            if (mReader.startInventoryTag((byte) 0, (byte) 0)) {
+            if (mReader.startInventoryTag()) {
                 btnScan.setText("停止扫描");
                 loopFlag = true;
                 new TagThread(10).start();
@@ -278,13 +279,13 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
             return;
         }
         //AppApplication.mReader.setPower(10);
-        SimpleRFIDEntity entity;
+        String entity;
         entity = mReader.readData("00000000",
-                RFIDWithUHF.BankEnum.valueOf("TID"),
+                IUHF.Bank_TID,
                 Integer.parseInt("0"),
                 Integer.parseInt("6"));
         if (entity != null) {
-            cardCode = entity.getData();
+            cardCode = entity;
             if (!TextUtils.isEmpty(cardCode)) {
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
                 String BASE_URL = ACache.get(AppApplication.getApplication()).getAsString("BASE_URL");

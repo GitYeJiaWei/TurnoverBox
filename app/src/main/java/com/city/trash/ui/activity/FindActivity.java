@@ -24,6 +24,7 @@ import com.rscja.deviceapi.entity.SimpleRFIDEntity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.rscja.deviceapi.interfaces.IUHF;
 
 import static com.city.trash.ui.activity.MainActivity.mReader;
 
@@ -139,14 +140,14 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         }
         initData();
         //AppApplication.mReader.setPower(10);
-        SimpleRFIDEntity entity;
+        String entity;
         entity = mReader.readData("00000000",
-                RFIDWithUHF.BankEnum.valueOf("UII"),
+                IUHF.Bank_TID,
                 Integer.parseInt("0"),
                 Integer.parseInt("4"));
 
-        if (entity!=null && entity.getId().length()>4){
-            String epc = entity.getId().substring(4);
+        if (entity!=null){
+            String epc = entity.substring(4);
             if (!TextUtils.isEmpty(epc)){
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
                 mPresenter.find(epc);

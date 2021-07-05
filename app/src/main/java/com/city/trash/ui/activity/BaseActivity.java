@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,6 +24,7 @@ import com.city.trash.presenter.BasePresenter;
 import com.city.trash.ui.BaseView;
 import com.city.trash.ui.receiver.NetworkChangeEvent;
 
+import com.rscja.deviceapi.entity.UHFTAGInfo;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -174,8 +176,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
 
     protected boolean loopFlag = false;
 
-    class TagThread extends Thread
-    {
+    class TagThread extends Thread {
 
         private int mBetween = 80;
 
@@ -186,32 +187,27 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         public void run() {
             String strTid;
             String strResult;
-
-            String[] res = null;
+            UHFTAGInfo res = null;
             while (loopFlag) {
-
-                res = mReader.readTagFromBuffer();//.readTagFormBuffer();
-
+                res = mReader.readTagFromBuffer();
                 if (res != null) {
-
-                    strTid = res[0];
-                    if (!strTid.equals("0000000000000000")&&!strTid.equals("000000000000000000000000")) {
+                    strTid = res.getTid();
+                    if (strTid.length() != 0 && !strTid.equals("0000000" +
+                            "000000000") && !strTid.equals("000000000000000000000000")) {
                         strResult = "TID:" + strTid + "\n";
                     } else {
                         strResult = "";
                     }
+                    Log.i("data", "EPC:" + res.getEPC() + "|" + strResult);
                     Message msg = handler.obtainMessage();
-                    BaseEpc baseEpc = new BaseEpc();
-                    baseEpc._EPC = mReader.convertUiiToEPC(res[1]);
-                    baseEpc._TID = strResult;
-                    try
-                    {
-                        baseEpc.rssi = (new Double(Double.valueOf(res[2]))).intValue();
-                    }catch (Exception e)
-                    {
+                    //msg.obj = strResult + "EPC:" + res.getEPC() + "@" + res.getRssi();
 
-                    }
+                    BaseEpc baseEpc = new BaseEpc();
+                    baseEpc._EPC = res.getEPC();
+                    baseEpc._TID = strResult;
+                    baseEpc.rssi = res.getRssi();
                     msg.obj = baseEpc;
+
                     handler.sendMessage(msg);
                 }
                 try {
