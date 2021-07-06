@@ -11,6 +11,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FindBean;
+import com.city.trash.common.SystemUtil;
 import com.city.trash.common.util.DateUtil;
 import com.city.trash.common.util.SoundManage;
 import com.city.trash.common.util.ToastUtil;
@@ -124,12 +125,19 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                readTag();
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    readTag();
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    readTag();
+                }
             }
         }
-
         return super.onKeyDown(keyCode, event);
 
     }

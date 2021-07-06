@@ -20,6 +20,7 @@ import com.city.trash.bean.EPC;
 import com.city.trash.bean.FeeRule;
 import com.city.trash.bean.LeaseBean;
 import com.city.trash.common.ScreenUtils;
+import com.city.trash.common.SystemUtil;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.DateUtil;
 import com.city.trash.common.util.SoundManage;
@@ -174,9 +175,17 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                readTag("扫描货物");
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("扫描货物");
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("扫描货物");
+                }
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -184,9 +193,17 @@ public class LeaseActivity extends BaseActivity<CreatRentPresenter> implements C
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                readTag("停止扫描");
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("停止扫描");
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("停止扫描");
+                }
             }
         }
         return super.onKeyUp(keyCode, event);

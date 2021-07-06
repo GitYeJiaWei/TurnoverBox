@@ -14,6 +14,7 @@ import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.BaseEpc;
 import com.city.trash.bean.EPC;
 import com.city.trash.bean.FeeRule;
+import com.city.trash.common.SystemUtil;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.city.trash.ui.fragment.BaseFragment;
 
 import static com.city.trash.ui.activity.MainActivity.mReader;
 
@@ -140,9 +142,17 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                readTag("扫描货物");
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("扫描货物");
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("扫描货物");
+                }
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -150,9 +160,17 @@ public class PickActivity extends BaseActivity<CreateDamagePresenter> implements
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                readTag("停止扫描");
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("停止扫描");
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    readTag("停止扫描");
+                }
             }
         }
         return super.onKeyUp(keyCode, event);

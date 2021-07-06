@@ -24,6 +24,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FeeRule;
+import com.city.trash.common.SystemUtil;
 import com.city.trash.common.download.LoadingService;
 import com.city.trash.common.download.Utils;
 import com.city.trash.common.util.ACache;
@@ -413,13 +414,24 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Fragment fragment = (BaseFragment) mAdapter.instantiateItem(vpager, vpager.getCurrentItem());
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                ((BaseFragment) fragment).myOnKeyDwon();
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    ((BaseFragment) fragment).myOnKeyDwon();
+                }
+            }else if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                exit();
+                return true;
             }
-        } else if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            exit();
-            return true;
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    ((BaseFragment) fragment).myOnKeyDwon();
+                }
+            }else if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                exit();
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -427,9 +439,17 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         Fragment fragment = (BaseFragment) mAdapter.instantiateItem(vpager, vpager.getCurrentItem());
-        if (keyCode == 139 || keyCode == 293) {
-            if (event.getRepeatCount() == 0) {
-                ((BaseFragment) fragment).myOnKeyUp();
+        if (SystemUtil.getSystemVersion().equals("6.0")){
+            if (keyCode == 139 || keyCode == 280) {
+                if (event.getRepeatCount() == 0) {
+                    ((BaseFragment) fragment).myOnKeyUp();
+                }
+            }
+        }else {
+            if (keyCode == 139 || keyCode == 293) {
+                if (event.getRepeatCount() == 0) {
+                    ((BaseFragment) fragment).myOnKeyUp();
+                }
             }
         }
         return super.onKeyUp(keyCode, event);
