@@ -27,8 +27,8 @@ public interface ApiService {
 
     //String BASE_URL = "http://mall.ioter-e.com:8112/";
 
-    String BASE_URL = "http://39.100.19.127:8081/";//正式
-    String ip = "39.100.19.127";//正式
+    String BASE_URL = "http://121.36.28.73:8081/";//正式
+    String ip = "121.36.28.73";//正式
     String host = "8081";//正式
 
     //token为方法名，基类中不能加入方法名

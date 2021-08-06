@@ -21,6 +21,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            def date = new Date().format("yyyyMMdd" , TimeZone.getTimeZone("GMT+08"))
+            if(variant.buildType.name.equals('debug')){
+                ///"commonui_${date}_${versionName}.apk"
+                outputFileName = "TurnoverBox_${date}_${versionName}.apk"
+            }
+            if(variant.buildType.name.equals('release')){
+                outputFileName = "TurnoverBox_${date}_${versionName}.apk"
+            }
+        }
+    }
 }
 
 dependencies {
