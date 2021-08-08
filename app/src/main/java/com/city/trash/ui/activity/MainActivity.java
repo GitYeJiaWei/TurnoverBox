@@ -24,6 +24,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.BaseBean;
 import com.city.trash.bean.FeeRule;
+import com.city.trash.common.ScreenUtils;
 import com.city.trash.common.SystemUtil;
 import com.city.trash.common.download.LoadingService;
 import com.city.trash.common.download.Utils;
@@ -515,11 +516,15 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
      * 从服务器获取版本最新的版本信息
      */
     private void getVersionInfoFromServer() {
-        path = getExternalCacheDir() + "/1.1.1.jpg";
-        //模拟从服务器获取信息
-        SharedPreferences sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
-        sharedPreferences.edit().putString("url", baseBean.getData().getAutoUpdateInfo().getFilePath()).commit();
-        sharedPreferences.edit().putString("path", path).commit();//getExternalCacheDir获取到的路径 为系统为app分配的内存 卸载app后 该目录下的资源也会删除
+        if (ScreenUtils.avaiableMedia()) {
+            path = getExternalCacheDir() + "/123.apk";   //SD卡存在
+        } else {
+            path = getCacheDir() + "/123.apk";           //SD卡不存在，用内部路径
+        }
+
+        //从服务器获取信息
+        ACache.get(this).put("url", baseBean.getData().getAutoUpdateInfo().getFilePath());
+        ACache.get(this).put("path", path);
         //比较版本信息
         try {
             int result = Utils.compareVersion(Utils.getVersionName(this), baseBean.getData().getAutoUpdateInfo().getVersion());

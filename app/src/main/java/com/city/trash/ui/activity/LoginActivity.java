@@ -1,9 +1,13 @@
 package com.city.trash.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -16,6 +20,7 @@ import com.city.trash.AppApplication;
 import com.city.trash.R;
 import com.city.trash.bean.LoginBean;
 import com.city.trash.common.ActivityCollecter;
+import com.city.trash.common.ScreenUtils;
 import com.city.trash.common.util.ACache;
 import com.city.trash.common.util.ToastUtil;
 import com.city.trash.di.component.AppComponent;
@@ -83,29 +88,43 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     private void initView(){
         //初始化二维码扫描头
         if (Build.VERSION.SDK_INT > 21) {
+            /**
+             * 8.0以上系统设置安装未知来源权限
+             */
+            if (Build.VERSION.SDK_INT >= 26) {
+                //先判断是否有安装未知来源应用的权限
+                boolean hasInstallPermission = isHasInstallPermissionWithO(this);
+                if (!hasInstallPermission) {
+                    //弹框提示用户手动打开
+                    ScreenUtils.showAlert(this, "安装权限", "需要打开允许来自此来源，请去设置中开启此权限", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                //此方法需要API>=26才能使用
+                                startInstallPermissionSettingActivity(LoginActivity.this);
+                            }
+                        }
+                    });
+                }
+            }
 
-            //扫条码 需要相机对应用开启相机和存储权限；
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            //扫条码 需要相机对应用开启相机和存储权限
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //先判断有没有权限 ，没有就在这里进行权限的申请
                 ActivityCompat.requestPermissions(LoginActivity.this,
                         new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
-            } else {
-                //说明已经获取到摄像头权限了 想干嘛干嘛
             }
             //读写内存权限
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // 请求权限
-                ActivityCompat
-                        .requestPermissions(
-                                this,
-                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                2);
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        2);
             }
-
         } else {
             //这个说明系统版本在6.0之下，不需要动态获取权限。
         }
@@ -166,5 +185,36 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             return false;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean isHasInstallPermissionWithO(Context context) {
+        if (context == null) {
+            return false;
+        }
+        return context.getPackageManager().canRequestPackageInstalls();
+    }
+
+    /**
+     * 开启设置安装未知来源应用权限界面
+     *
+     * @param context
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void startInstallPermissionSettingActivity(Context context) {
+        if (context == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        //获取当前apk包URI，并设置到intent中（这一步设置，可让“未知应用权限设置界面”只显示当前应用的设置项）
+        Uri packageURI = Uri.parse("package:" + context.getPackageName());
+        intent.setData(packageURI);
+        //设置不同版本跳转未知应用的动作
+        if (Build.VERSION.SDK_INT >= 26) {
+            intent.setAction(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+        } else {
+            intent.setAction(android.provider.Settings.ACTION_SECURITY_SETTINGS);
+        }
+        context.startActivity(intent);
     }
 }

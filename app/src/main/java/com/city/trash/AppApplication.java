@@ -7,6 +7,8 @@ import com.city.trash.common.AppCaughtException;
 import com.city.trash.di.component.AppComponent;
 import com.city.trash.di.component.DaggerAppComponent;
 import com.city.trash.di.module.AppModule;
+import org.xutils.x;
+
 import java.util.concurrent.ExecutorService;
 
 
@@ -51,7 +53,8 @@ public class AppApplication extends Application
         mApplication = (AppApplication) mAppComponent.getApplication();
         mGson = mAppComponent.getGson();
         mThreadPool = mAppComponent.getExecutorService();
-
+        //初始化下载框架xUtils
+        x.Ext.init(this);
     }
 
     @Override

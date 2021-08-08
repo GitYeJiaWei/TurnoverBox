@@ -15,10 +15,40 @@ android {
             abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
     }
+
+    signingConfigs {
+        //添加签名文件配置(将signingConfigs{}放到了buildType{}的后面,会导致编译的时候无法找到)
+        debug {
+            try {
+                storeFile file("../123456.jks")
+                storePassword STORE_PASSWORD
+                keyAlias KEY_ALIAS
+                keyPassword KEY_PASSWORD
+            } catch (ex) {
+                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+            }
+        }
+        release {
+            try {
+                storeFile file("../123456.jks")
+                storePassword STORE_PASSWORD
+                keyAlias KEY_ALIAS
+                keyPassword KEY_PASSWORD
+            } catch (ex) {
+                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+            }
+        }
+    }
     buildTypes {
         release {
+            minifyEnabled false  //是否开启混淆
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'//指定混淆文件的位置
+        }
+
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -26,11 +56,11 @@ android {
         variant.outputs.all {
             def date = new Date().format("yyyyMMdd" , TimeZone.getTimeZone("GMT+08"))
             if(variant.buildType.name.equals('debug')){
-                ///"commonui_${date}_${versionName}.apk"
-                outputFileName = "TurnoverBox_${date}_${versionName}.apk"
+                ///"commonui_${date}_v${versionName}.apk"
+                outputFileName = "TurnoverBox_${date}_v${versionName}.apk"
             }
             if(variant.buildType.name.equals('release')){
-                outputFileName = "TurnoverBox_${date}_${versionName}.apk"
+                outputFileName = "TurnoverBox_${date}_v${versionName}.apk"
             }
         }
     }
@@ -68,4 +98,6 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation files('libs/qsprintersdk.jar')
+    //文件下载框架
+    implementation 'org.xutils:xutils:3.4.0'
 }

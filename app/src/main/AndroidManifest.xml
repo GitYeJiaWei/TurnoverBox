@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
         android:name=".AppApplication"
@@ -41,11 +42,20 @@
                     <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <service android:name=".common.download.LoadingService"
             android:process="system"/><!--注册系统级别的服务 这样退出app可以继续下载-->
+        <provider
+                android:name="android.support.v4.content.FileProvider"
+                android:authorities="com.city.trash.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/provider_paths"/>
+        </provider>
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -1,13 +1,17 @@
 package com.city.trash.common;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Environment;
 import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import com.city.trash.R;
 
 public class ScreenUtils {
 
@@ -176,6 +180,35 @@ public class ScreenUtils {
             lastClickTime = curClickTime;
             return flag;
         }
+    }
+
+    /* 判断SD卡是否存在 返回true表示存在 */
+    public static boolean avaiableMedia() {
+        String status = Environment.getExternalStorageState();
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * alert 消息提示框显示
+     *
+     * @param context  上下文
+     * @param title    标题
+     * @param message  消息
+     * @param listener 监听器
+     */
+    public static void showAlert(Context context, String title, String message, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("确定", listener);
+        builder.setCancelable(false);
+        builder.setIcon(R.mipmap.ic_launcher);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 
