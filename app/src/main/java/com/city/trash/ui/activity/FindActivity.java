@@ -148,14 +148,12 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         }
         initData();
         //AppApplication.mReader.setPower(10);
-        String entity;
-        entity = mReader.readData("00000000",
-                IUHF.Bank_TID,
-                Integer.parseInt("0"),
-                Integer.parseInt("4"));
+        String epc = mReader.readData("00000000",
+                IUHF.Bank_EPC,
+                Integer.parseInt("2"),
+                Integer.parseInt("6"));
 
-        if (entity!=null){
-            String epc = entity.substring(4);
+        if (epc!=null){
             if (!TextUtils.isEmpty(epc)){
                 SoundManage.PlaySound(AppApplication.getApplication(), SoundManage.SoundType.SUCCESS);
                 mPresenter.find(epc);
