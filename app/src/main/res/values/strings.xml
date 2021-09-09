@@ -73,9 +73,9 @@
     <string name="str_printer_bufferfull">Buffer full</string>
     <string name="str_printer_buffernull">Buffer null</string>
     <string name="str_printer_hightemperature">High temperature</string>
-    <string name="str_disconnected">未连接 </string>
-    <string name="str_connecting">正在连接 </string>
-    <string name="str_connected">连接完成 </string>
+    <string name="str_disconnected">未连接</string>
+    <string name="str_connecting">正在连接</string>
+    <string name="str_connected">连接完成</string>
     <string name="str_scan">扫描设备</string>
     <string name="str_device">设备</string>
     <string name="str_scaning">正在扫描</string>

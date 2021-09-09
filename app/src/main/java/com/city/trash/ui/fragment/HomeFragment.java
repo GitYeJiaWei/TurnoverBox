@@ -83,6 +83,9 @@ public class HomeFragment extends BaseFragment {
                 } else if (id.equals("4")) {
                     map.put("img", R.mipmap.main07);
                     map.put("text","扫码查询");
+                } else if (id.equals("5")){
+                    map.put("img", R.mipmap.main02);
+                    map.put("text","绑定二维码");
                 }
                 dataList.add(map);
             }

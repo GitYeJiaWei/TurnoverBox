@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.city.trash">
+          package="com.city.trash">
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
-        android:name=".AppApplication"
-        android:allowBackup="true"
-        android:hardwareAccelerated="false"
-        android:icon="@mipmap/turnoverbox"
-        android:label="@string/app_name"
-        android:largeHeap="true"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:name=".AppApplication"
+            android:allowBackup="true"
+            android:hardwareAccelerated="false"
+            android:icon="@mipmap/turnoverbox"
+            android:label="@string/app_name"
+            android:largeHeap="true"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activity.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Notitle.FullScreen">
+                android:name=".ui.activity.LoginActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.Notitle.FullScreen">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                    <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name=".common.download.LoadingService"
-            android:process="system"/><!--注册系统级别的服务 这样退出app可以继续下载-->
+
+        <service
+                android:name=".common.download.LoadingService"
+                android:process="system"/> <!-- 注册系统级别的服务 这样退出app可以继续下载 -->
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="com.city.trash.fileprovider"
@@ -57,19 +57,19 @@
         </provider>
 
         <activity
-            android:name=".ui.activity.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.MainActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.InformActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.InformActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
 
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
                 <!--
                 //只监测有没有网络可用即可
                                     <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -77,57 +77,60 @@
                 -->
             </intent-filter>
         </receiver>
-
+        <activity android:name=".ui.activity.BindActivity"
+                  android:configChanges="keyboardHidden|orientation|screenSize"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.UserActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.UserActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.HelpActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.HelpActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.LeaseActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.LeaseActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.ReturnActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.ReturnActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.PickActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.PickActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.FindActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.FindActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.ReturnCommitActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.ReturnCommitActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.BleActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.BleActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.PrintSettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+                android:name=".ui.activity.PrintSettingActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
         <activity
-            android:name=".ui.activity.PowerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+                android:name=".ui.activity.PowerActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

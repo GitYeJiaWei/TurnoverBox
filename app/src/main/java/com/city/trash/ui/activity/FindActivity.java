@@ -167,7 +167,6 @@ public class FindActivity extends BaseActivity<FindPresenter> implements FindCon
         }
     }
 
-
     @OnClick(R.id.btn_scan)
     public void onViewClicked() {
         readTag();

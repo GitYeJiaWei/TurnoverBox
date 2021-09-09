@@ -98,6 +98,7 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation files('libs/qsprintersdk.jar')
+    implementation 'com.hongyelinggu:scancode:1.0.0'
     //文件下载框架
     implementation 'org.xutils:xutils:3.4.0'
 }

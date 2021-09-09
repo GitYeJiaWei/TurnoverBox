@@ -289,6 +289,8 @@ public class MainActivity extends BaseActivity<RuleListPresenter> implements Rul
             startActivity(new Intent(MainActivity.this, PickActivity.class));
         } else if (strValue.equals("扫码查询")) {
             startActivity(new Intent(MainActivity.this, FindActivity.class));
+        } else if (strValue.equals("绑定二维码")){
+            startActivity(new Intent(MainActivity.this, BindActivity.class));
         }
     }
 
