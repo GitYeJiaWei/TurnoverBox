@@ -56,7 +56,6 @@ public class BindActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void setupAcitivtyComponent(AppComponent appComponent) {
-
     }
 
     @Override
