@@ -21,13 +21,13 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 
 public interface ApiService {
-    String BASE_URL = "http://192.168.66.3:8112/";//测试
+    /*String BASE_URL = "http://192.168.66.3:8112/";//测试
     String ip = "192.168.66.3";//测试
-    String host = "8112";//测试
+    String host = "8112";//测试*/
 
-    /*String BASE_URL = "http://121.36.28.73:8081/";//正式
+    String BASE_URL = "http://121.36.28.73:8081/";//正式
     String ip = "121.36.28.73";//正式
-    String host = "8081";//正式*/
+    String host = "8081";//正式
     /*String BASE_URL = "http://39.100.19.127:8081/";//正式
     String ip = "39.100.19.127";//正式*/
 
